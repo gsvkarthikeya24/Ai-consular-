@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Career Guidance for Future Engineers - Discover the right engineering branch based on your interests, skills, and passion.">
+  <title>Career Guidance for Future Engineers</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="logo">EngineerPath</div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#pathways">Career Paths</a></li>
+        <li><a href="#how-to-choose">How to Choose</a></li>
+        <li><a href="#outcomes">Outcomes</a></li>
+        <li><a href="#quiz">Take Quiz</a></li>
+      </ul>
+      <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <h1>Career Guidance for Future Engineers</h1>
+      <p>Discover the right engineering branch based on your interests, skills, and passion.</p>
+      <button class="cta-button" onclick="document.getElementById('pathways').scrollIntoView({behavior: 'smooth'})">
+        Explore Career Paths
+      </button>
+    </div>
+  </section>
+
+  <!-- Interest-Based Career Pathways -->
+  <section id="pathways" class="container">
+    <div class="section-header fade-in">
+      <h2 class="section-title">Find Your Perfect Engineering Path</h2>
+      <p class="section-subtitle">
+        Choose your engineering future based on what excites you most. Each path offers unique opportunities to make a
+        real impact.
+      </p>
+    </div>
+
+    <div class="career-grid">
+
+      <!-- Civil Engineering -->
+      <div class="career-card fade-in">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path
+              d="M3 21h18M3 7v1a3 3 0 0 0 3 3h4a3 3 0 0 0 3-3V7m0 4v1a3 3 0 0 0 3 3h4a3 3 0 0 0 3-3V7M4 3h16v4H4z" />
+          </svg>
+        </div>
+        <h3>Civil Engineering</h3>
+        <p class="career-tagline">Build the Future</p>
+        <div class="interest-tags">
+          <span class="tag">Construction</span>
+          <span class="tag">Buildings</span>
+          <span class="tag">Bridges</span>
+          <span class="tag">Infrastructure</span>
+        </div>
+        <p class="card-description">
+          If you love the idea of designing towering buildings, strong bridges, massive dams, and modern roads, Civil
+          Engineering is your calling. You'll be the architect of infrastructure that shapes cities and communities.
+        </p>
+        <div class="related-fields">
+          <h4>Related Specializations:</h4>
+          <ul>
+            <li>Structural Engineering</li>
+            <li>Architecture</li>
+            <li>Environmental Engineering</li>
+            <li>Transportation Engineering</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Computer Science Engineering -->
+      <div class="career-card fade-in">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="3" width="20" height="14" rx="2" />
+            <path d="M8 21h8M12 17v4" />
+          </svg>
+        </div>
+        <h3>Computer Science Engineering</h3>
+        <p class="career-tagline">Code the Future</p>
+        <div class="interest-tags">
+          <span class="tag">Programming</span>
+          <span class="tag">Web Development</span>
+          <span class="tag">Mobile Apps</span>
+          <span class="tag">Software</span>
+        </div>
+        <p class="card-description">
+          Love coding, creating websites, and building apps? CSE is where innovation meets technology. You'll develop
+          software, websites, applications, and AI systems that power the digital world.
+        </p>
+        <div class="related-fields">
+          <h4>Related Specializations:</h4>
+          <ul>
+            <li>Information Technology</li>
+            <li>AI & Data Science</li>
+            <li>Software Engineering</li>
+            <li>Cloud Computing</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Cyber Security Engineering -->
+      <div class="career-card fade-in">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            <path d="M9 12l2 2 4-4" />
+          </svg>
+        </div>
+        <h3>Cyber Security Engineering</h3>
+        <p class="career-tagline">Protect the Digital World</p>
+        <div class="interest-tags">
+          <span class="tag">Ethical Hacking</span>
+          <span class="tag">Security</span>
+          <span class="tag">Networks</span>
+          <span class="tag">Protection</span>
+        </div>
+        <p class="card-description">
+          Fascinated by ethical hacking and protecting systems? Become a guardian of the digital world. You'll secure
+          government systems, prevent cyber attacks, and perform digital forensics.
+        </p>
+        <div class="related-fields">
+          <h4>Related Specializations:</h4>
+          <ul>
+            <li>Information Security</li>
+            <li>Network Security</li>
+            <li>Digital Forensics</li>
+            <li>Penetration Testing</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Mechanical Engineering -->
+      <div class="career-card fade-in">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m6.24 6.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m6.24-6.24l4.24-4.24" />
+          </svg>
+        </div>
+        <h3>Mechanical Engineering</h3>
+        <p class="career-tagline">Engineer Motion</p>
+        <div class="interest-tags">
+          <span class="tag">Machines</span>
+          <span class="tag">Automobiles</span>
+          <span class="tag">Robotics</span>
+          <span class="tag">Manufacturing</span>
+        </div>
+        <p class="card-description">
+          Passionate about engines, machines, and how things work? Mechanical Engineering lets you design and maintain
+          mechanical systems, from automobiles to advanced robotics.
+        </p>
+        <div class="related-fields">
+          <h4>Related Specializations:</h4>
+          <ul>
+            <li>Mechatronics</li>
+            <li>Automobile Engineering</li>
+            <li>Aerospace Engineering</li>
+            <li>Manufacturing Engineering</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Electrical & Electronics Engineering -->
+      <div class="career-card fade-in">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+          </svg>
+        </div>
+        <h3>Electrical & Electronics Engineering</h3>
+        <p class="career-tagline">Power the World</p>
+        <div class="interest-tags">
+          <span class="tag">Power Systems</span>
+          <span class="tag">Electricity</span>
+          <span class="tag">Renewable Energy</span>
+          <span class="tag">Electronics</span>
+        </div>
+        <p class="card-description">
+          Interested in electrical systems, power generation, and renewable energy? EEE focuses on power plants,
+          electrical systems, and sustainable energy solutions for tomorrow.
+        </p>
+        <div class="related-fields">
+          <h4>Related Specializations:</h4>
+          <ul>
+            <li>Power Engineering</li>
+            <li>Renewable Energy Engineering</li>
+            <li>Control Systems</li>
+            <li>Smart Grid Technology</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Electronics & Communication Engineering -->
+      <div class="career-card fade-in">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="5" y="2" width="14" height="20" rx="2" />
+            <path d="M12 18h.01" />
+          </svg>
+        </div>
+        <h3>Electronics & Communication Engineering</h3>
+        <p class="career-tagline">Connect the World</p>
+        <div class="interest-tags">
+          <span class="tag">Electronics</span>
+          <span class="tag">Communication</span>
+          <span class="tag">IoT</span>
+          <span class="tag">Embedded Systems</span>
+        </div>
+        <p class="card-description">
+          Fascinated by circuits, communication systems, and IoT? ECE deals with electronic devices, communication
+          networks, and chip design that powers modern technology.
+        </p>
+        <div class="related-fields">
+          <h4>Related Specializations:</h4>
+          <ul>
+            <li>VLSI Design</li>
+            <li>Embedded Systems</li>
+            <li>Internet of Things</li>
+            <li>Telecommunications</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Chemical Engineering -->
+      <div class="career-card fade-in">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 3h6l-1 7h-4L9 3zM6 14h12l-2 7H8l-2-7z" />
+            <circle cx="12" cy="17" r="1" />
+          </svg>
+        </div>
+        <h3>Chemical Engineering</h3>
+        <p class="career-tagline">Transform Materials</p>
+        <div class="interest-tags">
+          <span class="tag">Chemicals</span>
+          <span class="tag">Materials</span>
+          <span class="tag">Processes</span>
+          <span class="tag">Production</span>
+        </div>
+        <p class="card-description">
+          Curious about chemistry, materials, and industrial processes? Chemical Engineering involves industrial
+          chemical processes, material production, and large-scale manufacturing.
+        </p>
+        <div class="related-fields">
+          <h4>Related Specializations:</h4>
+          <ul>
+            <li>Petrochemical Engineering</li>
+            <li>Materials Engineering</li>
+            <li>Process Engineering</li>
+            <li>Biochemical Engineering</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Aerospace Engineering -->
+    <div class="career-card fade-in">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2l8 4v6c0 5.5-3.5 9.5-8 11-4.5-1.5-8-5.5-8-11V6l8-4z" />
+          <path d="M12 12l-3-3m3 3l3-3m-3 3v6" />
+        </svg>
+      </div>
+      <h3>Aerospace Engineering</h3>
+      <p class="career-tagline">Reach for the Sky</p>
+      <div class="interest-tags">
+        <span class="tag">Aircraft</span>
+        <span class="tag">Spacecraft</span>
+        <span class="tag">Aviation</span>
+        <span class="tag">Space Tech</span>
+      </div>
+      <p class="card-description">
+        Fascinated by flight, aircraft, rockets, and space exploration? Aerospace Engineering lets you design and
+        develop aircraft, spacecraft, satellites, and defense systems that push the boundaries of human achievement.
+      </p>
+      <div class="related-fields">
+        <h4>Related Specializations:</h4>
+        <ul>
+          <li>Aeronautical Engineering</li>
+          <li>Astronautical Engineering</li>
+          <li>Avionics Engineering</li>
+          <li>Satellite Technology</li>
+        </ul>
+      </div>
+    </div>
+
+    </div>
+  </section>
+
+  <!-- How to Choose Section -->
+  <section id="how-to-choose" class="container">
+    <div class="how-to-choose fade-in">
+      <div class="section-header">
+        <h2 class="section-title">How to Choose Your Branch</h2>
+        <p class="section-subtitle">Follow these simple steps to make an informed decision about your engineering
+          future.</p>
+      </div>
+
+      <div class="steps-container">
+        <div class="step fade-in">
+          <div class="step-number">1</div>
+          <h4 class="step-title">Identify Your Interests</h4>
+          <p class="step-description">Think about what excites you. Do you love building things, coding, or
+            understanding how systems work?</p>
+        </div>
+
+        <div class="step fade-in">
+          <div class="step-number">2</div>
+          <h4 class="step-title">Understand Each Branch</h4>
+          <p class="step-description">Learn what each engineering branch actually does. Don't just go by the
+            name—understand the real work involved.</p>
+        </div>
+
+        <div class="step fade-in">
+          <div class="step-number">3</div>
+          <h4 class="step-title">Match Interest with Skills</h4>
+          <p class="step-description">Consider your strengths. Are you good at math, physics, chemistry, or creative
+            thinking?</p>
+        </div>
+
+        <div class="step fade-in">
+          <div class="step-number">4</div>
+          <h4 class="step-title">Explore Career Opportunities</h4>
+          <p class="step-description">Research job prospects, salary expectations, and growth potential in different
+            engineering fields.</p>
+        </div>
+
+        <div class="step fade-in">
+          <div class="step-number">5</div>
+          <h4 class="step-title">Make an Informed Choice</h4>
+          <p class="step-description">Combine your passion, skills, and career goals to choose the branch that's right
+            for you.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Career Outcomes Section -->
+  <section id="outcomes" class="container">
+    <div class="section-header fade-in">
+      <h2 class="section-title">Career Outcomes & Opportunities</h2>
+      <p class="section-subtitle">Explore what awaits you after graduation in each engineering field.</p>
+    </div>
+
+    <div class="outcomes-grid">
+
+      <!-- Civil Engineering Outcomes -->
+      <div class="outcome-card fade-in">
+        <div class="outcome-header">
+          <h3>Civil Engineering Careers</h3>
+          <span class="expand-icon">▼</span>
+        </div>
+        <div class="outcome-content">
+          <div class="outcome-details">
+            <div class="outcome-section">
+              <h4>💼 Job Roles</h4>
+              <ul>
+                <li>Structural Engineer</li>
+                <li>Construction Manager</li>
+                <li>Urban Planner</li>
+                <li>Site Engineer</li>
+                <li>Transportation Engineer</li>
+              </ul>
+            </div>
+            <div class="outcome-section">
+              <h4>🏭 Industries</h4>
+              <ul>
+                <li>Construction & Real Estate</li>
+                <li>Government Infrastructure</li>
+                <li>Consulting Firms</li>
+                <li>Water Resources Management</li>
+              </ul>
+            </div>
+            <div class="outcome-section">
+              <h4>🎓 Higher Studies</h4>
+              <ul>
+                <li>M.Tech in Structural Engineering</li>
+                <li>MBA in Construction Management</li>
+                <li>MS in Transportation Engineering</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CSE Outcomes -->
+      <div class="outcome-card fade-in">
+        <div class="outcome-header">
+          <h3>Computer Science Careers</h3>
+          <span class="expand-icon">▼</span>
+        </div>
+        <div class="outcome-content">
+          <div class="outcome-details">
+            <div class="outcome-section">
+              <h4>💼 Job Roles</h4>
+              <ul>
+                <li>Software Developer</li>
+                <li>Full Stack Engineer</li>
+                <li>Data Scientist</li>
+                <li>AI/ML Engineer</li>
+                <li>Cloud Architect</li>
+                <li>DevOps Engineer</li>
+              </ul>
+            </div>
+            <div class="outcome-section">
+              <h4>🏭 Industries</h4>
+              <ul>
+                <li>IT & Software Companies</li>
+                <li>Tech Startups</li>
+                <li>Banking & Finance (Tech)</li>
+                <li>E-commerce & Digital Platforms</li>
+              </ul>
+            </div>
+            <div class="outcome-section">
+              <h4>🎓 Higher Studies</h4>
+              <ul>
+                <li>M.Tech in AI & Machine Learning</li>
+                <li>MS in Computer Science</li>
+                <li>MBA in Technology Management</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cyber Security Outcomes -->
+      <div class="outcome-card fade-in">
+        <div class="outcome-header">
+          <h3>Cyber Security Careers</h3>
+          <span class="expand-icon">▼</span>
+        </div>
+        <div class="outcome-content">
+          <div class="outcome-details">
+            <div class="outcome-section">
+              <h4>💼 Job Roles</h4>
+              <ul>
+                <li>Security Analyst</li>
+                <li>Ethical Hacker</li>
+                <li>Security Architect</li>
+                <li>Incident Response Specialist</li>
+                <li>Security Consultant</li>
+              </ul>
+            </div>
+            <div class="outcome-section">
+              <h4>🏭 Industries</h4>
+              <ul>
+                <li>Government & Defense</li>
+                <li>Banking & Financial Services</li>
+                <li>IT Security Firms</li>
+                <li>Healthcare (Data Protection)</li>
+              </ul>
+            </div>
+            <div class="outcome-section">
+              <h4>🎓 Higher Studies</h4>
+              <ul>
+                <li>M.Tech in Cyber Security</li>
+                <li>Certifications (CEH, CISSP)</li>
+                <li>MS in Information Security</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mechanical Outcomes -->
+      <div class="outcome-card fade-in">
+        <div class="outcome-header">
+          <h3>Mechanical Engineering Careers</h3>
+          <span class="expand-icon">▼</span>
+        </div>
+        <div class="outcome-content">
+          <div class="outcome-details">
+            <div class="outcome-section">
+              <h4>💼 Job Roles</h4>
+              <ul>
+                <li>Mechanical Design Engineer</li>
+                <li>Production Engineer</li>
+                <li>Automotive Engineer</li>
+                <li>HVAC Engineer</li>
+                <li>Quality Control Engineer</li>
+              </ul>
+            </div>
+            <div class="outcome-section">
+              <h4>🏭 Industries</h4>
+              <ul>
+                <li>Automobile Manufacturing</li>
+                <li>Aerospace & Defense</li>
+                <li>Manufacturing & Production</li>
+                <li>Energy Sector</li>
+              </ul>
+            </div>
+            <div class="outcome-section">
+              <h4>🎓 Higher Studies</h4>
+              <ul>
+                <li>M.Tech in Thermal Engineering</li>
+                <li>MS in Robotics</li>
+                <li>MBA in Operations</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EEE Outcomes -->
+      <div class="outcome-card fade-in">
+        <div class="outcome-header">
+          <h3>Electrical Engineering Careers</h3>
+          <span class="expand-icon">▼</span>
+        </div>
+        <div class="outcome-content">
+          <div class="outcome-details">
+            <div class="outcome-section">
+              <h4>💼 Job Roles</h4>
+              <ul>
+                <li>Power Systems Engineer</li>
+                <li>Electrical Design Engineer</li>
+                <li>Control Systems Engineer</li>
+                <li>Renewable Energy Engineer</li>
+                <li>Substation Engineer</li>
+              </ul>
+            </div>
+            <div class="outcome-section">
+              <h4>🏭 Industries</h4>
+              <ul>
+                <li>Power Generation & Distribution</li>
+                <li>Renewable Energy Companies</li>
+                <li>Government Power Sector</li>
+                <li>Automation Industries</li>
+              </ul>
+            </div>
+            <div class="outcome-section">
+              <h4>🎓 Higher Studies</h4>
+              <ul>
+                <li>M.Tech in Power Systems</li>
+                <li>MS in Renewable Energy</li>
+                <li>MBA in Energy Management</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ECE Outcomes -->
+      <div class="outcome-card fade-in">
+        <div class="outcome-header">
+          <h3>Electronics & Communication Careers</h3>
+          <span class="expand-icon">▼</span>
+        </div>
+        <div class="outcome-content">
+          <div class="outcome-details">
+            <div class="outcome-section">
+              <h4>💼 Job Roles</h4>
+              <ul>
+                <li>Electronics Engineer</li>
+                <li>Communication Engineer</li>
+                <li>VLSI Design Engineer</li>
+                <li>Embedded Systems Engineer</li>
+                <li>Network Engineer</li>
+              </ul>
+            </div>
+            <div class="outcome-section">
+              <h4>🏭 Industries</h4>
+              <ul>
+                <li>Telecommunications</li>
+                <li>Semiconductor Companies</li>
+                <li>Consumer Electronics</li>
+                <li>IoT & Smart Devices</li>
+              </ul>
+            </div>
+            <div class="outcome-section">
+              <h4>🎓 Higher Studies</h4>
+              <ul>
+                <li>M.Tech in VLSI Design</li>
+                <li>MS in Telecommunications</li>
+                <li>MBA in Technology</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chemical Outcomes -->
+      <div class="outcome-card fade-in">
+        <div class="outcome-header">
+          <h3>Chemical Engineering Careers</h3>
+          <span class="expand-icon">▼</span>
+        </div>
+        <div class="outcome-content">
+          <div class="outcome-details">
+            <div class="outcome-section">
+              <h4>💼 Job Roles</h4>
+              <ul>
+                <li>Process Engineer</li>
+                <li>Chemical Plant Manager</li>
+                <li>Quality Assurance Engineer</li>
+                <li>Research Scientist</li>
+                <li>Environmental Engineer</li>
+              </ul>
+            </div>
+            <div class="outcome-section">
+              <h4>🏭 Industries</h4>
+              <ul>
+                <li>Petrochemical Industries</li>
+                <li>Pharmaceutical Companies</li>
+                <li>Food Processing</li>
+                <li>Environmental Management</li>
+              </ul>
+            </div>
+            <div class="outcome-section">
+              <h4>🎓 Higher Studies</h4>
+              <ul>
+                <li>M.Tech in Chemical Engineering</li>
+                <li>MS in Process Engineering</li>
+                <li>MBA in Operations</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Aerospace Outcomes -->
+    <div class="outcome-card fade-in">
+      <div class="outcome-header">
+        <h3>Aerospace Engineering Careers</h3>
+        <span class="expand-icon">▼</span>
+      </div>
+      <div class="outcome-content">
+        <div class="outcome-details">
+          <div class="outcome-section">
+            <h4>💼 Job Roles</h4>
+            <ul>
+              <li>Aerospace Engineer</li>
+              <li>Aircraft Design Engineer</li>
+              <li>Flight Test Engineer</li>
+              <li>Propulsion Engineer</li>
+              <li>Satellite Systems Engineer</li>
+              <li>Avionics Engineer</li>
+            </ul>
+          </div>
+          <div class="outcome-section">
+            <h4>🏭 Industries</h4>
+            <ul>
+              <li>Aerospace & Defense (DRDO, HAL, ISRO)</li>
+              <li>Aviation Companies</li>
+              <li>Space Research Organizations</li>
+              <li>Defense Manufacturing</li>
+              <li>Aircraft Maintenance</li>
+            </ul>
+          </div>
+          <div class="outcome-section">
+            <h4>🎓 Higher Studies</h4>
+            <ul>
+              <li>M.Tech in Aerospace Engineering</li>
+              <li>MS in Aeronautics</li>
+              <li>PhD in Space Technology</li>
+              <li>MBA in Aviation Management</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </div>
+  </section>
+
+  <!-- Quiz CTA Section -->
+  <section class="container">
+    <div class="quiz-section fade-in" id="quiz">
+      <h2>Still Confused? Take Our Interest Quiz!</h2>
+      <p>Answer 5 simple questions and get personalized engineering branch recommendations.</p>
+      <button class="quiz-button" id="startQuizBtn">Start Quiz</button>
+    </div>
+  </section>
+
+  <!-- Quiz Modal -->
+  <div class="modal" id="quizModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Engineering Interest Quiz</h2>
+        <button class="modal-close" id="closeModalBtn">×</button>
+      </div>
+      <div id="quizContainer"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; 2026 EngineerPath - Career Guidance for Future Engineers</p>
+      <p>Helping students find their perfect engineering path</p>
+      <div class="footer-links">
+        <a href="#home">Home</a>
+        <a href="#pathways">Pathways</a>
+        <a href="#how-to-choose">Guide</a>
+        <a href="#outcomes">Careers</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
