@@ -59,14 +59,14 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        settings.frontend_url,
+        settings.frontend_url.rstrip('/'),
         "http://localhost:5173",
         "http://localhost:5174",
         "http://localhost:5175",
         "http://localhost:3000",
-        "*" if settings.allowed_hosts == "*" else settings.allowed_hosts
-    ],
-    allow_credentials=True,
+    ] if settings.allowed_hosts != "*" else ["*"],
+    # Note: if origins is ["*"], allow_credentials must be False
+    allow_credentials=True if settings.allowed_hosts != "*" else False,
     allow_methods=["*"],
     allow_headers=["*"],
 )

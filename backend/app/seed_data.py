@@ -28,15 +28,23 @@ SUBJECTS = ['Data Structures', 'Algorithms', 'Database Management', 'Operating S
             'Computer Networks', 'Machine Learning', 'Web Technologies', 'Software Engineering']
 
 
+_password_cache = {}
+
 def safe_hash_password(password: str) -> str:
-    """Safely hash password with 72-byte limit for bcrypt"""
+    """Safely hash password with 72-byte limit for bcrypt and caching for common strings"""
+    if password in _password_cache:
+        return _password_cache[password]
+        
     # Bcrypt has a maximum password length of 72 bytes
-    # Truncate to ensure we're within the limit
+    target = password
     if isinstance(password, str):
         password_bytes = password.encode('utf-8')
         if len(password_bytes) > 72:
-            password = password_bytes[:72].decode('utf-8', errors='ignore')
-    return hash_password(password)
+            target = password_bytes[:72].decode('utf-8', errors='ignore')
+            
+    hashed = hash_password(target)
+    _password_cache[password] = hashed
+    return hashed
 
 
 def seed_career_domains():
