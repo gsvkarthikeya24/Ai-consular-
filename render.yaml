@@ -18,16 +18,16 @@ services:
         value: production
       - key: FRONTEND_URL
         fromService:
-          type: static
+          type: web
           name: ai-consular-frontend
           property: url
 
-  # Frontend static site
-  - type: static
+  # Frontend web service
+  - type: web
     name: ai-consular-frontend
     runtime: node
     buildCommand: cd frontend && npm install && npm run build
-    publishPath: frontend/dist
+    startCommand: cd frontend && npm run preview -- --host 0.0.0.0 --port $PORT
     envVars:
       - key: VITE_API_URL
         fromService:

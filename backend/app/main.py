@@ -63,7 +63,8 @@ app.add_middleware(
         "http://localhost:5173",
         "http://localhost:5174",
         "http://localhost:5175",
-        "http://localhost:3000"
+        "http://localhost:3000",
+        "*" if settings.allowed_hosts == "*" else settings.allowed_hosts
     ],
     allow_credentials=True,
     allow_methods=["*"],

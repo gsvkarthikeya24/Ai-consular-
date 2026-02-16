@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     # Environment
     environment: str = "development"
     frontend_url: str = "http://localhost:5173"
+    allowed_hosts: str = "*"
     
     class Config:
         # Look for .env in the backend directory
