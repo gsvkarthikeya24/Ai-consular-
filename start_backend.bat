@@ -4,6 +4,12 @@ echo.
 
 cd backend
 
+REM Sync environment variables from root
+if exist "..\.env" (
+    echo Syncing environment variables from root...
+    copy /y "..\.env" ".env"
+)
+
 REM Check if virtual environment exists
 if not exist "venv" (
     echo Creating virtual environment...
