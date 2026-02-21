@@ -13,6 +13,9 @@ async def register(user_data: UserCreate):
     """Register a new student"""
     users_collection = get_collection("users")
     
+    # Normalize email
+    user_data.email = user_data.email.lower()
+    
     # Check if user exists
     if users_collection.find_one({"email": user_data.email}):
         raise HTTPException(
@@ -82,6 +85,7 @@ async def login(credentials: LoginRequest):
     
     # Regular login flow
     try:
+        credentials.email = credentials.email.lower()
         user = users_collection.find_one({"email": credentials.email})
         
         # DEMO MODE FIX: If user not found but we are in mock mode, create the demo user on the fly

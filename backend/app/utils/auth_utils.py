@@ -83,6 +83,9 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
             detail="Could not validate credentials"
         )
     
+    # Normalize email from token just in case
+    email = email.lower()
+    
     users_collection = get_collection("users")
     user = users_collection.find_one({"email": email})
     
