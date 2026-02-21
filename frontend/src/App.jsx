@@ -18,8 +18,7 @@ import CourseRecommendations from './components/Courses/CourseRecommendations';
 import GATEPrep from './components/GATE/GATEPrep';
 import BranchQuiz from './components/Career/BranchQuiz';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
-import BackgroundEffect from './components/UI/BackgroundEffect';
-import Footer from './components/shared/Footer';
+import Layout from './components/shared/Layout';
 
 /** Inner app — has access to AuthContext */
 function AppRoutes() {
@@ -30,28 +29,25 @@ function AppRoutes() {
     }
 
     return (
-        <>
-            <BackgroundEffect />
-            <Footer />
-            <Routes>
-                {/* Public Routes */}
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
+        <Routes>
+            {/* Public Routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-                {/* Protected Routes */}
-                <Route path="/dashboard" element={<ProtectedRoute><StudentDashboard /></ProtectedRoute>} />
-                <Route path="/career" element={<ProtectedRoute><CareerCounselor /></ProtectedRoute>} />
-                <Route path="/branch-quiz" element={<ProtectedRoute><BranchQuiz /></ProtectedRoute>} />
-                <Route path="/resume" element={<ProtectedRoute><ResumeATS /></ProtectedRoute>} />
-                <Route path="/mentor" element={<ProtectedRoute><AIMentor /></ProtectedRoute>} />
-                <Route path="/tasks" element={<ProtectedRoute><TaskList /></ProtectedRoute>} />
-                <Route path="/tasks/:id" element={<ProtectedRoute><TaskDetail /></ProtectedRoute>} />
-                <Route path="/interview" element={<ProtectedRoute><InterviewPrep /></ProtectedRoute>} />
-                <Route path="/internships" element={<ProtectedRoute><InternshipTracker /></ProtectedRoute>} />
-                <Route path="/courses" element={<ProtectedRoute><CourseRecommendations /></ProtectedRoute>} />
-                <Route path="/gate" element={<ProtectedRoute><GATEPrep /></ProtectedRoute>} />
-                <Route path="/analytics" element={<ProtectedRoute><ProgressAnalytics /></ProtectedRoute>} />
-
+            {/* Protected Routes — Wrapped in Layout */}
+            <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+                <Route path="/dashboard" element={<StudentDashboard />} />
+                <Route path="/career" element={<CareerCounselor />} />
+                <Route path="/branch-quiz" element={<BranchQuiz />} />
+                <Route path="/resume" element={<ResumeATS />} />
+                <Route path="/mentor" element={<AIMentor />} />
+                <Route path="/tasks" element={<TaskList />} />
+                <Route path="/tasks/:id" element={<TaskDetail />} />
+                <Route path="/interview" element={<InterviewPrep />} />
+                <Route path="/internships" element={<InternshipTracker />} />
+                <Route path="/courses" element={<CourseRecommendations />} />
+                <Route path="/gate" element={<GATEPrep />} />
+                <Route path="/analytics" element={<ProgressAnalytics />} />
                 <Route
                     path="/admin"
                     element={
@@ -60,14 +56,14 @@ function AppRoutes() {
                         </ProtectedRoute>
                     }
                 />
+            </Route>
 
-                {/* Default Route */}
-                <Route path="/" element={<Navigate to={isLoggedIn ? "/dashboard" : "/login"} replace />} />
+            {/* Default Route */}
+            <Route path="/" element={<Navigate to={isLoggedIn ? "/dashboard" : "/login"} replace />} />
 
-                {/* 404 Route */}
-                <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-        </>
+            {/* 404 Route */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
     );
 }
 

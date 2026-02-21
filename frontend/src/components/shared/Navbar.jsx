@@ -13,14 +13,14 @@ import {
     Menu,
     X
 } from 'lucide-react';
-import { getUser, logout, isAuthenticated } from '../../utils/auth';
+import { useAuth } from '../../context/AuthContext';
 import { cn } from '../../utils/cn';
 import Button from './Button';
 
 const Navbar = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const user = getUser();
+    const { currentUser: user, logout: authLogout, isLoggedIn } = useAuth();
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -35,8 +35,8 @@ const Navbar = () => {
     const isActive = (path) => location.pathname === path;
 
     const handleLogout = () => {
-        logout();
-        navigate('/login');
+        authLogout();
+        // logout function in context already handles redirection
     };
 
     const navItems = [
@@ -59,7 +59,7 @@ const Navbar = () => {
                 <div className="flex items-center justify-between h-20">
                     {/* Logo */}
                     <Link
-                        to={isAuthenticated() ? "/dashboard" : "/login"}
+                        to={isLoggedIn ? "/dashboard" : "/login"}
                         className="flex items-center space-x-3 group"
                     >
                         <div className="p-2 bg-gradient-to-br from-primary to-primary-dark rounded-xl shadow-lg shadow-primary/20 group-hover:shadow-primary/40 transition-all duration-300">

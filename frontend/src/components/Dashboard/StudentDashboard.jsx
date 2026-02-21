@@ -11,15 +11,14 @@ import {
     Brain,
     GraduationCap
 } from 'lucide-react';
-import Navbar from '../shared/Navbar';
 import Card from '../UI/Card';
 import Section from '../UI/Section';
 import Loader from '../shared/Loader';
 import api from '../../utils/api';
-import { getUser } from '../../utils/auth';
+import { useAuth } from '../../context/AuthContext';
 
 const StudentDashboard = () => {
-    const user = getUser();
+    const { currentUser: user } = useAuth();
     const navigate = useNavigate();
     const [stats, setStats] = useState({
         tasks_completed: 0,
@@ -47,18 +46,13 @@ const StudentDashboard = () => {
 
     if (loading) {
         return (
-            <>
-                <Navbar />
-                <Loader text="Loading your dashboard..." />
-            </>
+            <Loader text="Loading your dashboard..." />
         );
     }
 
     return (
         <div className="min-h-screen pb-20">
-            <Navbar />
-
-            <div className="pt-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="pt-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Welcome Section */}
                 <div className="mb-12 animate-fade-in relative z-10 flex justify-between items-start">
                     <div>

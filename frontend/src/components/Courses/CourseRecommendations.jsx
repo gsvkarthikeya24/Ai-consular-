@@ -57,17 +57,15 @@ const CourseRecommendations = () => {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto"></div>
-                    <p className="mt-4 text-gray-300">Loading courses...</p>
-                </div>
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto"></div>
+                <p className="mt-4 text-gray-300">Loading courses...</p>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen p-6">
+        <div className="py-4">
             <div className="max-w-7xl mx-auto">
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-white mb-2">Course Recommendations</h1>
