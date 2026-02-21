@@ -22,11 +22,7 @@ import Layout from './components/shared/Layout';
 
 /** Inner app — has access to AuthContext */
 function AppRoutes() {
-    const { isLoggedIn, authState } = useAuth();
-
-    if (authState === 'loading') {
-        return null; // Layout handled by ProtectedRoute/Spinner
-    }
+    const { isLoggedIn } = useAuth();
 
     return (
         <Routes>

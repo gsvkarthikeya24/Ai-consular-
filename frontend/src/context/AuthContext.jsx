@@ -19,13 +19,18 @@ const AuthContext = createContext(null);
  * API calls per navigation and no flicker/re-login on back button presses.
  */
 export const AuthProvider = ({ children }) => {
-    // 'loading' | 'authenticated' | 'unauthenticated'
-    const [authState, setAuthState] = useState('loading');
-    const [currentUser, setCurrentUser] = useState(null);
+    // Synchronously check local storage to prevent redirect flicker
+    const initialUser = getUser();
+    const isInitiallyAuthed = isAuthenticated();
+
+    const [authState, setAuthState] = useState(isInitiallyAuthed ? 'authenticated' : 'loading');
+    const [currentUser, setCurrentUser] = useState(isInitiallyAuthed ? initialUser : null);
 
     const verifySession = useCallback(async () => {
-        // Quick client-side check first (no network required)
-        if (!isAuthenticated()) {
+        const token = getToken();
+
+        // If no token at all, definitely unauthenticated
+        if (!token) {
             setAuthState('unauthenticated');
             setCurrentUser(null);
             return;

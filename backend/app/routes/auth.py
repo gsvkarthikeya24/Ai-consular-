@@ -225,17 +225,4 @@ async def update_profile(
     )
 
 
-@router.get("/profile", response_model=UserResponse)
-async def get_profile(current_user: dict = Depends(get_current_user)):
-    """Get current user profile - used for token validation"""
-    return UserResponse(
-        id=str(current_user["_id"]),
-        name=current_user["name"],
-        email=current_user["email"],
-        branch=current_user["branch"],
-        year=current_user["year"],
-        interests=current_user.get("interests", []),
-        career_goal=current_user.get("career_goal", ""),
-        role=current_user.get("role", "student"),
-        created_at=current_user.get("created_at", "")
-    )
+

@@ -114,64 +114,114 @@ class PostgresCollection:
                 self.inserted_ids = inserted_ids
         return InsertManyResult(ids)
 
-    def find_one(self, filter: Dict[str, Any]):
-        if not filter:
-            query = f"SELECT doc FROM {self.name} LIMIT 1"
-            params = []
-        else:
-            conditions = []
-            params = []
-            for k, v in filter.items():
-                if k == "_id":
-                    conditions.append(f"id = %s")
-                    params.append(str(v))
-                else:
-                    conditions.append(f"doc->>%s = %s")
-                    params.extend([k, str(v)])
-            query = f"SELECT doc FROM {self.name} WHERE " + " AND ".join(conditions) + " LIMIT 1"
+    def find_one(self, filter: Dict[str, Any], projection: Dict[str, int] = None):
+        cursor = self.find(filter, projection)
+        results = cursor.limit(1)._execute()
+        return results[0] if results else None
 
-        with self.db.conn.cursor() as cur:
-            cur.execute(query, params)
-            row = cur.fetchone()
-            if row:
-                doc = row[0]
-                if isinstance(doc, str):
-                    doc = json.loads(doc)
-                return doc
-        return None
+    def find(self, filter: Dict[str, Any] = None, projection: Dict[str, int] = None):
+        query = f"SELECT doc FROM {self.name}"
+        params = []
+        
+        if filter:
+            conditions, filter_params = self._build_where(filter)
+            if conditions:
+                query += " WHERE " + conditions
+                params.extend(filter_params)
 
-    def find(self, filter: Dict[str, Any] = None):
-        if not filter:
-            query = f"SELECT doc FROM {self.name}"
-            params = []
-        else:
-            conditions = []
-            params = []
-            for k, v in filter.items():
-                if k == "_id":
-                    conditions.append(f"id = %s")
-                    params.append(str(v))
-                elif isinstance(v, dict) and "$ne" in v:
-                    conditions.append(f"doc->>%s != %s")
-                    params.extend([k, str(v["$ne"])])
-                elif isinstance(v, dict) and "$in" in v:
-                    # Support for {"_id": {"$in": [...]}}
-                    if k == "_id":
-                        placeholders = ",".join(["%s"] * len(v["$in"]))
-                        conditions.append(f"id IN ({placeholders})")
-                        params.extend([str(x) for x in v["$in"]])
-                    else:
-                        placeholders = ",".join(["%s"] * len(v["$in"]))
-                        conditions.append(f"doc->>%s IN ({placeholders})")
-                        params.append(k)
-                        params.extend([str(x) for x in v["$in"]])
-                else:
-                    conditions.append(f"doc->>%s = %s")
-                    params.extend([k, str(v)])
+        cursor = PostgresCursor(self, query, params)
+        cursor._projection = projection
+        return cursor
+
+    def _build_where(self, filter: Dict[str, Any]):
+        conditions = []
+        params = []
+        
+        # Support for $or
+        if "$or" in filter:
+            or_conditions = []
+            for sub_filter in filter["$or"]:
+                cond, p = self._build_where(sub_filter)
+                if cond:
+                    or_conditions.append(f"({cond})")
+                    params.extend(p)
+            if or_conditions:
+                conditions.append("(" + " OR ".join(or_conditions) + ")")
+        
+        for k, v in filter.items():
+            if k == "$or": continue
             
-            query = f"SELECT doc FROM {self.name} WHERE " + " AND ".join(conditions)
+            # Handle nested dots (v1: only one level supported for now)
+            field_ref = "id" if k == "_id" else f"doc->>'{k}'"
+            if "." in k:
+                parts = k.split(".")
+                field_ref = f"doc->'{parts[0]}'"
+                for p in parts[1:-1]:
+                    field_ref += f"->'{p}'"
+                field_ref += f"->>'{parts[-1]}'"
 
-        return PostgresCursor(self, query, params)
+            if isinstance(v, dict):
+                if "$ne" in v:
+                    conditions.append(f"{field_ref} != %s")
+                    params.append(str(v["$ne"]))
+                elif "$in" in v:
+                    placeholders = ",".join(["%s"] * len(v["$in"]))
+                    conditions.append(f"{field_ref} IN ({placeholders})")
+                    params.extend([str(x) for x in v["$in"]])
+                elif "$gt" in v:
+                    conditions.append(f"({field_ref})::numeric > %s")
+                    params.append(v["$gt"])
+            else:
+                conditions.append(f"{field_ref} = %s")
+                params.append(str(v))
+        
+        return " AND ".join(conditions), params
+
+    def aggregate(self, pipeline: List[Dict[str, Any]]):
+        """Very basic $group emulation for stats"""
+        # For this prototype, we'll fetch then process in Python if it's a small dataset
+        # In a real app, this would translate to SQL GROUP BY
+        docs = list(self.find({}))
+        
+        for stage in pipeline:
+            if "$group" in stage:
+                group_config = stage["$group"]
+                id_field = group_config["_id"]
+                if isinstance(id_field, str) and id_field.startswith("$"):
+                    id_key = id_field[1:]
+                else:
+                    id_key = id_field
+                
+                results = {}
+                for doc in docs:
+                    val = doc.get(id_key, "Unknown")
+                    if val not in results:
+                        results[val] = {"_id": val}
+                        for k in group_config:
+                            if k == "_id": continue
+                            results[val][k] = 0
+                    
+                    # Handle simple $sum: 1 or $sum: {$cond: ...}
+                    for k, op in group_config.items():
+                        if k == "_id": continue
+                        if "$sum" in op:
+                            summ = op["$sum"]
+                            if summ == 1:
+                                results[val][k] += 1
+                            elif isinstance(summ, dict) and "$cond" in summ:
+                                # Very basic $cond emulation
+                                cond = summ["$cond"]
+                                if isinstance(cond, list) and len(cond) == 3:
+                                    # [{$eq: ["$status", "completed"]}, 1, 0]
+                                    eq = cond[0].get("$eq")
+                                    if eq:
+                                        f_key = eq[0][1:] if eq[0].startswith("$") else eq[0]
+                                        if doc.get(f_key) == eq[1]:
+                                            results[val][k] += cond[1]
+                                        else:
+                                            results[val][k] += cond[2]
+                return list(results.values())
+        return docs
 
     def update_one(self, filter: Dict[str, Any], update: Dict[str, Any]):
         doc = self.find_one(filter)
@@ -221,16 +271,14 @@ class PostgresCollection:
         return UpdateResult(1 if modified else 0)
 
     def count_documents(self, filter: Dict[str, Any]):
-        if not filter:
-            query = f"SELECT COUNT(*) FROM {self.name}"
-            params = []
-        else:
-            conditions = []
-            params = []
-            for k, v in filter.items():
-                conditions.append(f"doc->>%s = %s")
-                params.extend([k, str(v)])
-            query = f"SELECT COUNT(*) FROM {self.name} WHERE " + " AND ".join(conditions)
+        query = f"SELECT COUNT(*) FROM {self.name}"
+        params = []
+        
+        if filter:
+            conditions, filter_params = self._build_where(filter)
+            if conditions:
+                query += " WHERE " + conditions
+                params.extend(filter_params)
 
         with self.db.conn.cursor() as cur:
             cur.execute(query, params)

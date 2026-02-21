@@ -29,6 +29,11 @@ async def get_student_stats(current_user: dict = Depends(get_current_user)):
         "status": "completed"
     })
     
+    # Calculate internships tracked
+    internships_tracked = internships_collection.count_documents({
+        "student_id": student_id
+    }) if internships_collection is not None else 0
+    
     # Calculate courses recommended (count courses that match branch or interests)
     courses_collection = get_collection("courses")
     courses_recommended = 5 # Default fallback
@@ -101,12 +106,20 @@ async def get_admin_stats(current_user: dict = Depends(require_admin)):
     
     student_statuses = []
     for s in students:
+        last_login_raw = s.get("last_login")
+        last_login_val = None
+        if last_login_raw:
+            if hasattr(last_login_raw, "isoformat"):
+                last_login_val = last_login_raw.isoformat()
+            else:
+                last_login_val = str(last_login_raw)
+
         student_statuses.append({
             "name": s["name"],
             "email": s["email"],
             "status": s.get("status", "inactive"),
             "login_count": s.get("login_count", 0),
-            "last_login": s.get("last_login").isoformat() if s.get("last_login") else None
+            "last_login": last_login_val
         })
 
     # 3. Performance Metrics (Simplified aggregation)

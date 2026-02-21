@@ -85,45 +85,49 @@ const AdminDashboard = () => {
             {/* Key Metrics Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-10">
                 <Card className="border-t-4 border-blue-500 shadow-sm">
-                    <p className="text-xs font-bold text-slate-400 uppercase mb-1">Total Students</p>
-                    <p className="text-3xl font-black text-slate-900">{stats.total_students}</p>
-                    <div className="mt-4 flex items-center text-blue-600">
+                    <p className="text-xs font-bold text-text-muted uppercase mb-1">Total Students</p>
+                    <p className="text-3xl font-black text-white">{stats.total_students}</p>
+                    <div className="mt-4 flex items-center text-blue-400">
                         <Users className="w-4 h-4 mr-1" />
                         <span className="text-xs font-bold">Registration Base</span>
                     </div>
                 </Card>
 
                 <Card className="border-t-4 border-green-500 shadow-sm">
-                    <p className="text-xs font-bold text-slate-400 uppercase mb-1">Accessed System</p>
-                    <p className="text-3xl font-black text-slate-900">{stats.total_students_accessed}</p>
-                    <div className="mt-4 flex items-center text-green-600">
+                    <p className="text-xs font-bold text-text-muted uppercase mb-1">Accessed System</p>
+                    <p className="text-3xl font-black text-white">{stats.total_students_accessed}</p>
+                    <div className="mt-4 flex items-center text-green-400">
                         <Target className="w-4 h-4 mr-1" />
-                        <span className="text-xs font-bold">{Math.round((stats.total_students_accessed / stats.total_students) * 100)}% Reach</span>
+                        <span className="text-xs font-bold">
+                            {stats.total_students > 0
+                                ? Math.round((stats.total_students_accessed / stats.total_students) * 100)
+                                : 0}% Reach
+                        </span>
                     </div>
                 </Card>
 
                 <Card className="border-t-4 border-purple-500 shadow-sm">
-                    <p className="text-xs font-bold text-slate-400 uppercase mb-1">Currently Active</p>
-                    <p className="text-3xl font-black text-slate-900">{stats.active_users}</p>
-                    <div className="mt-4 flex items-center text-purple-600">
+                    <p className="text-xs font-bold text-text-muted uppercase mb-1">Currently Active</p>
+                    <p className="text-3xl font-black text-white">{stats.active_users}</p>
+                    <div className="mt-4 flex items-center text-purple-400">
                         <TrendingUp className="w-4 h-4 mr-1" />
                         <span className="text-xs font-bold">Live Users</span>
                     </div>
                 </Card>
 
                 <Card className="border-t-4 border-orange-500 shadow-sm">
-                    <p className="text-xs font-bold text-slate-400 uppercase mb-1">Total Tasks</p>
-                    <p className="text-3xl font-black text-slate-900">{stats.total_tasks}</p>
-                    <div className="mt-4 flex items-center text-orange-600">
+                    <p className="text-xs font-bold text-text-muted uppercase mb-1">Total Tasks</p>
+                    <p className="text-3xl font-black text-white">{stats.total_tasks}</p>
+                    <div className="mt-4 flex items-center text-orange-400">
                         <BookOpen className="w-4 h-4 mr-1" />
                         <span className="text-xs font-bold">Activity Log</span>
                     </div>
                 </Card>
 
                 <Card className="border-t-4 border-pink-500 shadow-sm">
-                    <p className="text-xs font-bold text-slate-400 uppercase mb-1">AI Interactions</p>
-                    <p className="text-3xl font-black text-slate-900">{stats.ai_interactions}</p>
-                    <div className="mt-4 flex items-center text-pink-600">
+                    <p className="text-xs font-bold text-text-muted uppercase mb-1">AI Interactions</p>
+                    <p className="text-3xl font-black text-white">{stats.ai_interactions}</p>
+                    <div className="mt-4 flex items-center text-pink-400">
                         <BarChart3 className="w-4 h-4 mr-1" />
                         <span className="text-xs font-bold">Mentor Usage</span>
                     </div>
