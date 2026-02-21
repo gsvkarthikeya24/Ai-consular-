@@ -1,19 +1,22 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, Navigate } from 'react-router-dom';
 import { LogIn, Loader2, GraduationCap } from 'lucide-react';
 import api from '../../utils/api';
-import { setToken, setUser } from '../../utils/auth';
+import { useAuth } from '../../context/AuthContext';
 import Card from '../UI/Card';
 import Section from '../UI/Section';
 
 const Login = () => {
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({
-        email: '',
-        password: ''
-    });
+    const { authState, login: setAuthLogin } = useAuth();
+    const [formData, setFormData] = useState({ email: '', password: '' });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+
+    // If already logged in, skip the login page entirely
+    if (authState === 'authenticated') {
+        return <Navigate to="/dashboard" replace />;
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -21,18 +24,14 @@ const Login = () => {
         setLoading(true);
 
         try {
-            console.log('Attempting login with:', formData);
             const response = await api.post('/api/auth/login', formData);
-            console.log('Login response:', response);
             const { access_token, user } = response.data;
 
-            setToken(access_token);
-            setUser(user);
-            navigate('/dashboard');
+            // Update global auth context (handles localStorage + state update)
+            setAuthLogin(access_token, user);
+            navigate('/dashboard', { replace: true });
         } catch (err) {
-            console.error('Login error:', err);
-            console.error('Error response:', err.response);
-            console.error('Error data:', err.response?.data);
+            console.error('Login error:', err.response?.data);
             setError(err.response?.data?.detail || 'Login failed. Please try again.');
         } finally {
             setLoading(false);

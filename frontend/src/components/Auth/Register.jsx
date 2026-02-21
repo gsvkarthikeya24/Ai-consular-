@@ -1,13 +1,14 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, Navigate } from 'react-router-dom';
 import { UserPlus, Loader2, GraduationCap } from 'lucide-react';
 import api from '../../utils/api';
-import { setToken, setUser } from '../../utils/auth';
+import { useAuth } from '../../context/AuthContext';
 import { BRANCHES, YEARS, CAREER_GOALS } from '../../utils/constants';
 import Card from '../UI/Card';
 
 const Register = () => {
     const navigate = useNavigate();
+    const { authState, login: setAuthLogin } = useAuth();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -19,6 +20,11 @@ const Register = () => {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+
+    // If already logged in, skip the register page entirely
+    if (authState === 'authenticated') {
+        return <Navigate to="/dashboard" replace />;
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -40,9 +46,9 @@ const Register = () => {
 
             const { access_token, user } = response.data;
 
-            setToken(access_token);
-            setUser(user);
-            navigate('/dashboard');
+            // Update global auth context
+            setAuthLogin(access_token, user);
+            navigate('/dashboard', { replace: true });
         } catch (err) {
             setError(err.response?.data?.detail || 'Registration failed. Please try again.');
         } finally {

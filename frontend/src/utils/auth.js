@@ -69,15 +69,17 @@ export const isAuthenticated = () => {
     // Check if token is expired
     const payload = parseJwt(token);
 
-    // If we can't parse the payload, consider it unauthenticated
+    // If we can't parse the payload, consider it unauthenticated and clean up
     if (!payload || !payload.exp) {
-        console.error("Invalid or missing JWT payload");
+        console.error("Invalid or missing JWT payload — clearing session");
+        removeToken();
+        removeUser();
         return false;
     }
 
     const currentTime = Math.floor(Date.now() / 1000);
-    const leeway = 60; // 60 seconds leeway for clock skew
-    if (payload.exp < (currentTime - leeway)) {
+    // Give a 30-second buffer AFTER expiry (leeway for clock skew), not before
+    if (payload.exp + 30 < currentTime) {
         console.warn("Token expired, clearing session");
         removeToken();
         removeUser();

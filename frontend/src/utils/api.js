@@ -28,8 +28,16 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        // If 401 Unauthorized, log out the user and redirect to login
-        if (error.response?.status === 401 && !error.config.url.includes('/api/auth/login')) {
+        const status = error.response?.status;
+        const url = error.config?.url || '';
+
+        // Only auto-logout on 401 when it's NOT:
+        // - The login endpoint (expected to get 401 on bad credentials)
+        // - The profile-check endpoint (used by ProtectedRoute — it handles the redirect itself)
+        const isLoginEndpoint = url.includes('/api/auth/login');
+        const isProfileEndpoint = url.includes('/api/auth/profile');
+
+        if (status === 401 && !isLoginEndpoint && !isProfileEndpoint) {
             // Unauthorized - clear token and redirect via a clean logout
             localStorage.removeItem('access_token');
             localStorage.removeItem('user');

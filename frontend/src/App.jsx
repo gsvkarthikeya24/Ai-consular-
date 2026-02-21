@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { isAuthenticated } from './utils/auth';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
 // Components
 import Login from './components/Auth/Login';
@@ -21,120 +21,36 @@ import ProtectedRoute from './components/Auth/ProtectedRoute';
 import BackgroundEffect from './components/UI/BackgroundEffect';
 import Footer from './components/shared/Footer';
 
-function App() {
+/** Inner app — has access to AuthContext */
+function AppRoutes() {
+    const { isLoggedIn, authState } = useAuth();
+
+    if (authState === 'loading') {
+        return null; // Layout handled by ProtectedRoute/Spinner
+    }
+
     return (
-        <BrowserRouter>
+        <>
             <BackgroundEffect />
             <Footer />
             <Routes>
-                {/* Public Routes - No longer redirecting away */}
-                <Route
-                    path="/login"
-                    element={<Login />}
-                />
-                <Route
-                    path="/register"
-                    element={<Register />}
-                />
-
+                {/* Public Routes */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
 
                 {/* Protected Routes */}
-                <Route
-                    path="/dashboard"
-                    element={
-                        <ProtectedRoute>
-                            <StudentDashboard />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/career"
-                    element={
-                        <ProtectedRoute>
-                            <CareerCounselor />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/branch-quiz"
-                    element={
-                        <ProtectedRoute>
-                            <BranchQuiz />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/resume"
-                    element={
-                        <ProtectedRoute>
-                            <ResumeATS />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/mentor"
-                    element={
-                        <ProtectedRoute>
-                            <AIMentor />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/tasks"
-                    element={
-                        <ProtectedRoute>
-                            <TaskList />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/tasks/:id"
-                    element={
-                        <ProtectedRoute>
-                            <TaskDetail />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/interview"
-                    element={
-                        <ProtectedRoute>
-                            <InterviewPrep />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/internships"
-                    element={
-                        <ProtectedRoute>
-                            <InternshipTracker />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/courses"
-                    element={
-                        <ProtectedRoute>
-                            <CourseRecommendations />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/gate"
-                    element={
-                        <ProtectedRoute>
-                            <GATEPrep />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/analytics"
-                    element={
-                        <ProtectedRoute>
-                            <ProgressAnalytics />
-                        </ProtectedRoute>
-                    }
-                />
+                <Route path="/dashboard" element={<ProtectedRoute><StudentDashboard /></ProtectedRoute>} />
+                <Route path="/career" element={<ProtectedRoute><CareerCounselor /></ProtectedRoute>} />
+                <Route path="/branch-quiz" element={<ProtectedRoute><BranchQuiz /></ProtectedRoute>} />
+                <Route path="/resume" element={<ProtectedRoute><ResumeATS /></ProtectedRoute>} />
+                <Route path="/mentor" element={<ProtectedRoute><AIMentor /></ProtectedRoute>} />
+                <Route path="/tasks" element={<ProtectedRoute><TaskList /></ProtectedRoute>} />
+                <Route path="/tasks/:id" element={<ProtectedRoute><TaskDetail /></ProtectedRoute>} />
+                <Route path="/interview" element={<ProtectedRoute><InterviewPrep /></ProtectedRoute>} />
+                <Route path="/internships" element={<ProtectedRoute><InternshipTracker /></ProtectedRoute>} />
+                <Route path="/courses" element={<ProtectedRoute><CourseRecommendations /></ProtectedRoute>} />
+                <Route path="/gate" element={<ProtectedRoute><GATEPrep /></ProtectedRoute>} />
+                <Route path="/analytics" element={<ProtectedRoute><ProgressAnalytics /></ProtectedRoute>} />
 
                 <Route
                     path="/admin"
@@ -146,14 +62,21 @@ function App() {
                 />
 
                 {/* Default Route */}
-                <Route
-                    path="/"
-                    element={<Navigate to={isAuthenticated() ? "/dashboard" : "/login"} />}
-                />
+                <Route path="/" element={<Navigate to={isLoggedIn ? "/dashboard" : "/login"} replace />} />
 
                 {/* 404 Route */}
-                <Route path="*" element={<Navigate to="/" />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
+        </>
+    );
+}
+
+function App() {
+    return (
+        <BrowserRouter>
+            <AuthProvider>
+                <AppRoutes />
+            </AuthProvider>
         </BrowserRouter>
     );
 }

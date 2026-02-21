@@ -110,7 +110,14 @@ async def login(credentials: LoginRequest):
             detail="Database connection error"
         )
 
-    if not user or not verify_password(credentials.password, user["password"]):
+    # Verify password (handles type issues from JSONB storage gracefully)
+    try:
+        password_valid = user and verify_password(credentials.password, user.get("password", ""))
+    except Exception as e:
+        print(f"[WARN] Password verification error for {credentials.email}: {e}")
+        password_valid = False
+
+    if not password_valid:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password"
@@ -157,17 +164,20 @@ async def login(credentials: LoginRequest):
 
 @router.get("/profile", response_model=UserResponse)
 async def get_profile(current_user: dict = Depends(get_current_user)):
-    """Get current user profile"""
+    """Get current user profile - used by frontend for session validation"""
     return UserResponse(
-        id=str(current_user["_id"]),
-        name=current_user["name"],
-        email=current_user["email"],
-        branch=current_user["branch"],
-        year=current_user["year"],
-        interests=current_user["interests"],
-        career_goal=current_user["career_goal"],
-        role=current_user["role"],
-        created_at=current_user["created_at"]
+        id=str(current_user.get("_id", "")),
+        name=current_user.get("name", ""),
+        email=current_user.get("email", ""),
+        branch=current_user.get("branch", "CSE"),
+        year=int(current_user.get("year", 1)),
+        interests=current_user.get("interests", []),
+        career_goal=current_user.get("career_goal", ""),
+        role=current_user.get("role", "student"),
+        login_count=current_user.get("login_count", 0),
+        last_login=current_user.get("last_login"),
+        status=current_user.get("status", "active"),
+        created_at=current_user.get("created_at", "")
     )
 
 
