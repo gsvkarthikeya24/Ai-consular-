@@ -1,8 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { X, Calendar, Target, Award, CheckCircle2, ChevronRight } from 'lucide-react';
 import Card from '../UI/Card';
 
 const RoadmapModal = ({ isOpen, onClose, roadmapData }) => {
+    const navigate = useNavigate();
     if (!isOpen || !roadmapData) return null;
 
     const { domain, roadmap_phases, key_skills, certifications, estimated_duration } = roadmapData;
@@ -99,7 +101,10 @@ const RoadmapModal = ({ isOpen, onClose, roadmapData }) => {
                                     Get personalized guidance from our AI Mentor for this path.
                                 </p>
                                 <button
-                                    onClick={() => window.location.href = '/mentor'}
+                                    onClick={() => {
+                                        navigate('/mentor');
+                                        onClose();
+                                    }}
                                     className="w-full py-2 bg-primary/20 hover:bg-primary/30 border border-primary/40 rounded-lg text-primary-glow text-xs font-bold flex items-center justify-center gap-2 transition-all"
                                 >
                                     Chat with Mentor <ChevronRight className="w-3 h-3" />

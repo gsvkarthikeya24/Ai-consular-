@@ -6,7 +6,7 @@ python -m app.seed_data
 """
 
 from faker import Faker
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import random
 import sys
 from app.database import connect_db, get_collection, is_db_connected
@@ -85,8 +85,8 @@ def seed_students(count=30):
             "interests": ["System Administration"],
             "career_goal": "Job",
             "role": "admin",
-            "created_at": datetime.utcnow(),
-            "updated_at": datetime.utcnow()
+            "created_at": datetime.now(timezone.utc),
+            "updated_at": datetime.now(timezone.utc)
         }
         users_collection.insert_one(admin)
         print(f"[OK] Created admin user: admin@aiconsular.com / admin123")
@@ -108,8 +108,8 @@ def seed_students(count=30):
             "interests": ["Machine Learning", "Web Development", "AI"],
             "career_goal": "Job",
             "role": "student",
-            "created_at": datetime.utcnow(),
-            "updated_at": datetime.utcnow()
+            "created_at": datetime.now(timezone.utc),
+            "updated_at": datetime.now(timezone.utc)
         }
         students.append(demo_student)
     except Exception as e:
@@ -127,8 +127,8 @@ def seed_students(count=30):
                 "interests": random.sample(INTERESTS_POOL, k=random.randint(2, 5)),
                 "career_goal": random.choice(CAREER_GOALS),
                 "role": "student",
-                "created_at": datetime.utcnow() - timedelta(days=random.randint(1, 365)),
-                "updated_at": datetime.utcnow()
+                "created_at": datetime.now(timezone.utc) - timedelta(days=random.randint(1, 365)),
+                "updated_at": datetime.now(timezone.utc)
             }
             students.append(student)
         except Exception as e:
@@ -161,7 +161,7 @@ def seed_tasks(student_ids):
                 "conversation_history": [],
                 "feedback": None,
                 "completed_at": None,
-                "created_at": datetime.utcnow() - timedelta(days=random.randint(1, 90))
+                "created_at": datetime.now(timezone.utc) - timedelta(days=random.randint(1, 90))
             }
             
             if task["status"] == "completed":
@@ -188,7 +188,7 @@ def seed_activities(student_ids):
                 "skills_gained": random.sample(INTERESTS_POOL, k=random.randint(1, 3)),
                 "weak_areas": [],
                 "strong_areas": random.sample(SUBJECTS, k=random.randint(1, 3)),
-                "timestamp": datetime.utcnow() - timedelta(days=random.randint(1, 180))
+                "timestamp": datetime.now(timezone.utc) - timedelta(days=random.randint(1, 180))
             }
             activities.append(activity)
     
@@ -279,8 +279,8 @@ def seed_internships(student_ids):
                 "status": random.choice(statuses),
                 "notes": fake.sentence(),
                 "ai_review": None,
-                "created_at": datetime.utcnow() - timedelta(days=random.randint(1, 60)),
-                "updated_at": datetime.utcnow()
+                "created_at": datetime.now(timezone.utc) - timedelta(days=random.randint(1, 60)),
+                "updated_at": datetime.now(timezone.utc)
             }
             # Give some demo students a pre-existing review
             if random.random() > 0.7:

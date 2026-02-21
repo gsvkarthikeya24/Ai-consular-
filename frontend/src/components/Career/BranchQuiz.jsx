@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Brain, ArrowRight, ArrowLeft, Loader2, Sparkles, CheckCircle, Info, Bot } from 'lucide-react';
 import api from '../../utils/api';
 import Card from '../UI/Card';
@@ -7,6 +8,7 @@ import Section from '../UI/Section';
 import Navbar from '../shared/Navbar';
 
 const BranchQuiz = () => {
+    const navigate = useNavigate();
     const [questions, setQuestions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [currentStep, setCurrentStep] = useState(0);
@@ -128,8 +130,8 @@ const BranchQuiz = () => {
                     </Card>
 
                     <div className="flex justify-center gap-4">
-                        <Button onClick={() => window.location.href = '/career'} variant="secondary">Back to Counselor</Button>
-                        <Button onClick={() => window.location.href = '/courses'} className="shadow-[0_0_20px_rgba(6,182,212,0.3)]">Explore Courses</Button>
+                        <Button onClick={() => navigate('/career')} variant="secondary">Back to Counselor</Button>
+                        <Button onClick={() => navigate('/courses')} className="shadow-[0_0_20px_rgba(6,182,212,0.3)]">Explore Courses</Button>
                     </div>
                 </div>
             </div>
@@ -168,13 +170,13 @@ const BranchQuiz = () => {
                                     key={option.id}
                                     onClick={() => handleOptionSelect(currentQuestion.id, option.id)}
                                     className={`w-full text-left p-5 rounded-2xl border transition-all flex items-center gap-4 group ${answers[currentQuestion.id] === option.id
-                                            ? 'bg-primary/20 border-primary-500 shadow-[0_0_15px_rgba(6,182,212,0.2)]'
-                                            : 'bg-white/5 border-white/10 hover:border-white/20 hover:bg-white/10'
+                                        ? 'bg-primary/20 border-primary-500 shadow-[0_0_15px_rgba(6,182,212,0.2)]'
+                                        : 'bg-white/5 border-white/10 hover:border-white/20 hover:bg-white/10'
                                         }`}
                                 >
                                     <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 ${answers[currentQuestion.id] === option.id
-                                            ? 'border-primary-500 bg-primary-500'
-                                            : 'border-white/20'
+                                        ? 'border-primary-500 bg-primary-500'
+                                        : 'border-white/20'
                                         }`}>
                                         {answers[currentQuestion.id] === option.id && <div className="w-2 h-2 bg-white rounded-full"></div>}
                                     </div>

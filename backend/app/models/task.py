@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class TaskBase(BaseModel):
@@ -21,7 +21,7 @@ class ConversationMessage(BaseModel):
     """Conversation message model"""
     role: str  # user or assistant
     content: str
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class TaskInDB(TaskBase):

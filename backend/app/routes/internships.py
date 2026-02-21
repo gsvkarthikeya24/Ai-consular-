@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from typing import List
-from datetime import datetime
+from datetime import datetime, timezone
 from bson import ObjectId
 from ..utils.auth_utils import get_current_user
 from ..database import get_collection
@@ -22,9 +22,9 @@ async def add_internship(
     internship_dict = internship_data.model_dump()
     internship_dict.update({
         "student_id": str(current_user["_id"]),
-        "applied_date": datetime.utcnow(),
+        "applied_date": datetime.now(timezone.utc),
         "ai_suggestions": [],
-        "updated_at": datetime.utcnow()
+        "updated_at": datetime.now(timezone.utc)
     })
     
     result = internships_collection.insert_one(internship_dict)
@@ -56,7 +56,7 @@ async def update_internship(
     internships_collection = get_collection("internships")
     
     update_dict = update_data.model_dump(exclude_unset=True)
-    update_dict["updated_at"] = datetime.utcnow()
+    update_dict["updated_at"] = datetime.now(timezone.utc)
     
     result = internships_collection.update_one(
         {"_id": ObjectId(internship_id), "student_id": str(current_user["_id"])},
@@ -112,7 +112,7 @@ async def get_internship_ai_review(
     # Optionally store the review in the database
     internships_collection.update_one(
         {"_id": ObjectId(internship_id)},
-        {"$set": {"ai_review": review_data["review"], "updated_at": datetime.utcnow()}}
+        {"$set": {"ai_review": review_data["review"], "updated_at": datetime.now(timezone.utc)}}
     )
     
     return {

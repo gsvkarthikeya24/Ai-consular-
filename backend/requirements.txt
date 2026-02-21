@@ -15,5 +15,6 @@ Faker
 email-validator
 mongomock
 
+psycopg2-binary
 pypdf
 gunicorn

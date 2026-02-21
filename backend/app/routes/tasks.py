@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, status, Depends
-from datetime import datetime
+from datetime import datetime, timezone
 from bson import ObjectId
 from typing import List
 from ..models.task import (
@@ -32,7 +32,7 @@ async def create_task(
         "conversation_history": [],
         "feedback": None,
         "completed_at": None,
-        "created_at": datetime.utcnow()
+        "created_at": datetime.now(timezone.utc)
     })
     
     result = tasks_collection.insert_one(task_dict)
@@ -137,12 +137,12 @@ async def get_task_assistance(
     conversation_history.append({
         "role": "user",
         "content": request.message,
-        "timestamp": datetime.utcnow()
+        "timestamp": datetime.now(timezone.utc)
     })
     conversation_history.append({
         "role": "assistant",
         "content": ai_response,
-        "timestamp": datetime.utcnow()
+        "timestamp": datetime.now(timezone.utc)
     })
     
     # Update task
@@ -188,7 +188,7 @@ async def complete_task(
         {
             "$set": {
                 "status": "completed",
-                "completed_at": datetime.utcnow()
+                "completed_at": datetime.now(timezone.utc)
             }
         }
     )
@@ -206,7 +206,7 @@ async def complete_task(
         "skills_gained": [],  # Can be enhanced with NLP
         "weak_areas": [],
         "strong_areas": [],
-        "timestamp": datetime.utcnow()
+        "timestamp": datetime.now(timezone.utc)
     })
     
     return {"message": "Task marked as completed"}

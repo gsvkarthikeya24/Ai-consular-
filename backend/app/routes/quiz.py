@@ -10,7 +10,7 @@ async def get_quiz_questions(current_user: dict = Depends(get_current_user)):
     """Fetch the 10 branch selection questions"""
     return QUIZ_QUESTIONS
 
-from datetime import datetime
+from datetime import datetime, timezone
 @router.post("/recommend")
 async def get_branch_recommendation(
     answers: List[Dict[str, str]], 
@@ -49,6 +49,6 @@ async def get_branch_recommendation(
         "recommended_branch": recommended_branch,
         "description": BRANCH_DESCRIPTIONS.get(recommended_branch, "Engineering is a versatile field."),
         "scores": scores,
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
 

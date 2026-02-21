@@ -2,7 +2,7 @@ from typing import Optional, Dict, List
 import json
 import re
 import random
-from datetime import datetime
+from datetime import datetime, timezone
 
 try:
     from google import genai
@@ -199,7 +199,7 @@ Provide 3-5 specific career path recommendations in JSON format:
         return {
             "recommendations": parsed_result.get("paths", []),
             "raw_text": response if "error" in parsed_result else None,
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
     
     async def resume_content_generation(
@@ -237,7 +237,7 @@ Provide 3-5 bullet points for each project."""
         
         return {
             "generated_content": response,
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
     
     async def ats_analysis(
@@ -290,7 +290,7 @@ Format as JSON:
             "keywords_missing": parsed_result.get("keywords_missing") if isinstance(parsed_result.get("keywords_missing"), list) else [],
             "suggestions": parsed_result.get("suggestions") if isinstance(parsed_result.get("suggestions"), list) else [],
             "match_details": parsed_result.get("match_details", {}),
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
     
     def _get_fallback_response(self, user_message: str) -> str:
@@ -559,7 +559,7 @@ Format as JSON:
             "suggestions": parsed_result.get("suggestions") if isinstance(parsed_result.get("suggestions"), list) else [],
             "domain_match": parsed_result.get("domain_match", "Good potential"),
             "target_domain": target_domain['title'],
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
     
     async def generate_skill_roadmap(
@@ -676,7 +676,7 @@ Keep it concise and actionable."""
             "review": response,
             "company": company,
             "role": role,
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
 
 

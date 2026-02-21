@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Compass, Target, Brain, ArrowRight, Loader2, Star, ChevronRight } from 'lucide-react';
 import api from '../../utils/api';
 import Card from '../UI/Card';
@@ -8,6 +9,7 @@ import Navbar from '../shared/Navbar';
 import RoadmapModal from './RoadmapModal';
 
 const CareerCounselor = () => {
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [roadmapLoading, setRoadmapLoading] = useState(false);
     const [recommendations, setRecommendations] = useState(null);
@@ -97,7 +99,7 @@ const CareerCounselor = () => {
                                     <p className="text-text-secondary max-w-xs mx-auto mb-8 text-sm">
                                         Not sure which branch to pick? Take our 10-question expert quiz.
                                     </p>
-                                    <Button onClick={() => window.location.href = '/branch-quiz'} variant="secondary" size="md" className="px-8">
+                                    <Button onClick={() => navigate('/branch-quiz')} variant="secondary" size="md" className="px-8">
                                         Take the Quiz
                                     </Button>
                                 </div>
@@ -162,7 +164,7 @@ const CareerCounselor = () => {
                             ))}
 
                             <Card
-                                onClick={() => window.location.href = '/mentor'}
+                                onClick={() => navigate('/mentor')}
                                 className="flex flex-col items-center justify-center text-center p-8 bg-gradient-to-br from-primary-dark to-primary-900 border-primary/30 shadow-[0_0_30px_rgba(8,145,178,0.15)] cursor-pointer group hover:scale-[1.02] transition-transform"
                             >
                                 <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mb-6 group-hover:bg-white/20 transition-colors backdrop-blur-sm">

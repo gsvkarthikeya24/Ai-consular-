@@ -1,38 +1,47 @@
-from pymongo import MongoClient
-from pymongo.database import Database
-from pymongo.errors import ServerSelectionTimeoutError
+from typing import Any
 from .config import settings
 
-# MongoDB client
-client: MongoClient = None
-database: Database = None
+# Database client
+client: Any = None
+database: Any = None
 
 
 def connect_db():
-    """Connect to MongoDB with shorter timeout"""
+    """Connect to MongoDB or PostgreSQL"""
     global client, database
     try:
-        # Use shorter timeout for faster feedback
-        client = MongoClient(
-            settings.mongodb_uri, 
-            serverSelectionTimeoutMS=2000,
-            connectTimeoutMS=2000
-        )
-        database = client[settings.database_name]
-        # Verify connection
-        client.admin.command('ping')
-        print(f"[OK] Connected to MongoDB: {settings.database_name}")
-    except (ServerSelectionTimeoutError, Exception) as e:
-        print(f"[!] Warning: Could not connect to real MongoDB at {settings.mongodb_uri}. Error: {e}")
-        print("[INFO] Switching to In-Memory Database (mongomock). Data will NOT persist.")
-        
-        try:
-            import mongomock
-            client = mongomock.MongoClient()
+        if settings.is_postgres:
+            from .postgres_adapter import PostgresClient
+            client = PostgresClient(settings.mongodb_uri)
             database = client[settings.database_name]
-            print(f"[OK] Connected to MOCK MongoDB: {settings.database_name}")
-        except ImportError:
-            print("[ERROR] mongomock not installed. Please run: pip install mongomock")
+            print(f"[OK] Connected to PostgreSQL: {settings.database_name}")
+        else:
+            from pymongo import MongoClient
+            client = MongoClient(
+                settings.mongodb_uri, 
+                serverSelectionTimeoutMS=2000,
+                connectTimeoutMS=2000
+            )
+            database = client[settings.database_name]
+            # Verify connection
+            client.admin.command('ping')
+            print(f"[OK] Connected to MongoDB: {settings.database_name}")
+    except Exception as e:
+        print(f"[!] Warning: Could not connect to database at {settings.mongodb_uri}. Error: {e}")
+        
+        if not settings.is_postgres:
+            print("[INFO] Switching to In-Memory Database (mongomock). Data will NOT persist.")
+            try:
+                import mongomock
+                client = mongomock.MongoClient()
+                database = client[settings.database_name]
+                print(f"[OK] Connected to MOCK MongoDB: {settings.database_name}")
+            except ImportError:
+                print("[ERROR] mongomock not installed. Please run: pip install mongomock")
+                client = None
+                database = None
+        else:
+            print("[ERROR] PostgreSQL connection failed. No mock available for Postgres.")
             client = None
             database = None
 
@@ -45,7 +54,7 @@ def close_db():
         print("[X] Closed MongoDB connection")
 
 
-def get_database() -> Database:
+def get_database() -> Any:
     """Get database instance"""
     return database
 

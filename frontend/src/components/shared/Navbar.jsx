@@ -13,7 +13,7 @@ import {
     Menu,
     X
 } from 'lucide-react';
-import { getUser, logout } from '../../utils/auth';
+import { getUser, logout, isAuthenticated } from '../../utils/auth';
 import { cn } from '../../utils/cn';
 import Button from './Button';
 
@@ -58,7 +58,10 @@ const Navbar = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-20">
                     {/* Logo */}
-                    <Link to="/dashboard" className="flex items-center space-x-3 group">
+                    <Link
+                        to={isAuthenticated() ? "/dashboard" : "/login"}
+                        className="flex items-center space-x-3 group"
+                    >
                         <div className="p-2 bg-gradient-to-br from-primary to-primary-dark rounded-xl shadow-lg shadow-primary/20 group-hover:shadow-primary/40 transition-all duration-300">
                             <GraduationCap className="w-6 h-6 text-white" />
                         </div>

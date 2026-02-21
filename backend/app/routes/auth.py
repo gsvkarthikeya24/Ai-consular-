@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, status, Depends
-from datetime import datetime
+from datetime import datetime, timezone
 from bson import ObjectId
 from ..models.user import UserCreate, UserResponse, LoginRequest, TokenResponse, UserUpdate
 from ..database import get_collection, is_mock_mode
@@ -22,11 +22,12 @@ async def register(user_data: UserCreate):
     
     # Create user document
     user_dict = user_data.model_dump(exclude={"password"})
+    current_time = datetime.now(timezone.utc)
     user_dict.update({
         "password": hash_password(user_data.password),
         "role": "student",
-        "created_at": datetime.utcnow(),
-        "updated_at": datetime.utcnow()
+        "created_at": current_time,
+        "updated_at": current_time
     })
     
     result = users_collection.insert_one(user_dict)
@@ -58,18 +59,18 @@ async def login(credentials: LoginRequest):
     
     # Check for demo user fallback if database is down
     if users_collection is None:
-        if credentials.email == "student.demo@university.edu" and credentials.password == "demo123":
+        if credentials.email == "student1@example.com" and credentials.password == "password123":
             # Return a mock demo user
             user_response = UserResponse(
                 id="demo-id",
                 name="Demo Student (Offline Mode)",
-                email="student.demo@university.edu",
+                email="student1@example.com",
                 branch="CSE",
                 year=3,
                 interests=["Machine Learning", "Web Development"],
                 career_goal="Job",
                 role="student",
-                created_at=datetime.utcnow()
+                created_at=datetime.now(timezone.utc)
             )
             access_token = create_access_token(data={"sub": credentials.email})
             return TokenResponse(access_token=access_token, user=user_response)
@@ -84,19 +85,20 @@ async def login(credentials: LoginRequest):
         user = users_collection.find_one({"email": credentials.email})
         
         # DEMO MODE FIX: If user not found but we are in mock mode, create the demo user on the fly
-        if not user and is_mock_mode() and credentials.email == "student.demo@university.edu" and credentials.password == "demo123":
+        if not user and is_mock_mode() and credentials.email == "student1@example.com" and credentials.password == "password123":
             print("[INFO] Mock mode: Creating demo user on first login")
+            current_time = datetime.now(timezone.utc)
             demo_user = {
                 "name": "Demo Student",
-                "email": "student.demo@university.edu",
-                "password": hash_password("demo123"),
+                "email": "student1@example.com",
+                "password": hash_password("password123"),
                 "branch": "CSE",
                 "year": 3,
                 "interests": ["Machine Learning", "Web Development", "AI"],
                 "career_goal": "Job",
                 "role": "student",
-                "created_at": datetime.utcnow(),
-                "updated_at": datetime.utcnow()
+                "created_at": current_time,
+                "updated_at": current_time
             }
             result = users_collection.insert_one(demo_user)
             demo_user["_id"] = result.inserted_id
@@ -117,6 +119,23 @@ async def login(credentials: LoginRequest):
     # Create access token
     access_token = create_access_token(data={"sub": credentials.email})
     
+    # Update login stats
+    current_time = datetime.now(timezone.utc)
+    users_collection.update_one(
+        {"_id": user["_id"]},
+        {
+            "$inc": {"login_count": 1},
+            "$set": {
+                "last_login": current_time,
+                "status": "active",
+                "updated_at": current_time
+            }
+        }
+    )
+    
+    # Reload user data to get updated stats for response
+    user = users_collection.find_one({"_id": user["_id"]})
+    
     # Prepare response
     user_response = UserResponse(
         id=str(user["_id"]),
@@ -127,6 +146,9 @@ async def login(credentials: LoginRequest):
         interests=user["interests"],
         career_goal=user["career_goal"],
         role=user["role"],
+        login_count=user.get("login_count", 0),
+        last_login=user.get("last_login"),
+        status=user.get("status", "active"),
         created_at=user["created_at"]
     )
     
@@ -165,7 +187,7 @@ async def update_profile(
             detail="No fields to update"
         )
     
-    update_data["updated_at"] = datetime.utcnow()
+    update_data["updated_at"] = datetime.now(timezone.utc)
     
     # Update user
     users_collection.update_one(
@@ -186,4 +208,20 @@ async def update_profile(
         career_goal=updated_user["career_goal"],
         role=updated_user["role"],
         created_at=updated_user["created_at"]
+    )
+
+
+@router.get("/profile", response_model=UserResponse)
+async def get_profile(current_user: dict = Depends(get_current_user)):
+    """Get current user profile - used for token validation"""
+    return UserResponse(
+        id=str(current_user["_id"]),
+        name=current_user["name"],
+        email=current_user["email"],
+        branch=current_user["branch"],
+        year=current_user["year"],
+        interests=current_user.get("interests", []),
+        career_goal=current_user.get("career_goal", ""),
+        role=current_user.get("role", "student"),
+        created_at=current_user.get("created_at", "")
     )

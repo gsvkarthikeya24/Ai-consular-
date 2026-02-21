@@ -1,5 +1,27 @@
 // Authentication utilities
 
+const parseJwt = (token) => {
+    try {
+        if (!token) return null;
+        const base64Url = token.split('.')[1];
+        if (!base64Url) return null;
+
+        // Fix base64 padding
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const pad = base64.length % 4;
+        const paddedBase64 = pad ? base64 + '='.repeat(4 - pad) : base64;
+
+        const jsonPayload = decodeURIComponent(atob(paddedBase64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        return JSON.parse(jsonPayload);
+    } catch (e) {
+        console.error("JWT parsing error:", e);
+        return null;
+    }
+};
+
 export const setToken = (token) => {
     localStorage.setItem('access_token', token);
 };
@@ -17,19 +39,14 @@ export const setUser = (user) => {
 };
 
 export const getUser = () => {
-    const user = localStorage.getItem('user');
-    if (user) return JSON.parse(user);
+    try {
+        const user = localStorage.getItem('user');
+        if (user) return JSON.parse(user);
+    } catch (e) {
+        console.error("Failed to parse user from localStorage", e);
+    }
 
-    // Default mock user for "Demo Mode" without login
-    return {
-        _id: "demo_student_123",
-        name: "Demo Student",
-        email: "student1@example.com",
-        branch: "Computer Science",
-        year: 3,
-        career_goal: "Software Engineer",
-        interests: ["AI", "Web Development", "Cloud"]
-    };
+    return null;
 };
 
 export const removeUser = () => {
@@ -39,10 +56,33 @@ export const removeUser = () => {
 export const logout = () => {
     removeToken();
     removeUser();
-    // Redirect to root instead of login
-    window.location.href = '/';
+    // Redirect to login page explicitly on logout
+    window.location.href = '/login';
 };
 
 export const isAuthenticated = () => {
-    return true; // Always authenticated for easy access
+    const token = getToken();
+    const user = getUser();
+
+    if (!token || !user) return false;
+
+    // Check if token is expired
+    const payload = parseJwt(token);
+
+    // If we can't parse the payload, consider it unauthenticated
+    if (!payload || !payload.exp) {
+        console.error("Invalid or missing JWT payload");
+        return false;
+    }
+
+    const currentTime = Math.floor(Date.now() / 1000);
+    const leeway = 60; // 60 seconds leeway for clock skew
+    if (payload.exp < (currentTime - leeway)) {
+        console.warn("Token expired, clearing session");
+        removeToken();
+        removeUser();
+        return false;
+    }
+
+    return true;
 };

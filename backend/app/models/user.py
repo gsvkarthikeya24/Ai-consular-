@@ -32,6 +32,9 @@ class UserInDB(UserBase):
     """User in database model"""
     id: str = Field(alias="_id", examples=["507f1f77bcf86cd799439011"])
     role: str = Field(default="student", examples=["student"])
+    login_count: int = Field(default=0, examples=[5])
+    last_login: Optional[datetime] = Field(default=None)
+    status: str = Field(default="inactive", examples=["active"])
     created_at: datetime
     updated_at: datetime
     
@@ -58,6 +61,9 @@ class UserResponse(UserBase):
     """User response model"""
     id: str = Field(..., examples=["507f1f77bcf86cd799439011"])
     role: str = Field(..., examples=["student"])
+    login_count: int = Field(default=0)
+    last_login: Optional[datetime] = Field(default=None)
+    status: str = Field(default="inactive")
     created_at: datetime
     
     model_config = ConfigDict(

@@ -6,9 +6,13 @@ import os
 class Settings(BaseSettings):
     """Application configuration settings"""
     
-    # MongoDB
-    mongodb_uri: str = "mongodb://localhost:27017"
+    # Database
+    mongodb_uri: str = "mongodb://localhost:27017" # Can be MongoDB or PostgreSQL
     database_name: str = "ai_consular"
+    
+    @property
+    def is_postgres(self) -> bool:
+        return self.mongodb_uri.startswith("postgresql://") or self.mongodb_uri.startswith("postgres://")
     
     # JWT
     jwt_secret: str = "demo-secret-key-change-in-production"
@@ -29,6 +33,7 @@ class Settings(BaseSettings):
         # Look for .env in the backend directory
         env_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
         case_sensitive = False
+        extra = "ignore"
 
 
 settings = Settings()

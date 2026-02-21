@@ -6,7 +6,7 @@ from ..utils.file_utils import extract_text_from_pdf
 from ..services.ai_service import ai_service
 from ..database import get_collection
 from bson import ObjectId
-from datetime import datetime
+from datetime import datetime, timezone
 from ..models.resume import (
     ResumeData,
     ResumeResponse,
@@ -111,7 +111,7 @@ async def save_resume(
     
     data_dict = resume_data.model_dump(exclude_unset=True)
     data_dict["student_id"] = str(current_user["_id"])
-    data_dict["updated_at"] = datetime.utcnow()
+    data_dict["updated_at"] = datetime.now(timezone.utc)
     
     # Check if resume exists
     existing = resumes_collection.find_one({"student_id": str(current_user["_id"])})
@@ -123,7 +123,7 @@ async def save_resume(
         )
         return {"message": "Resume updated successfully"}
     else:
-        data_dict["created_at"] = datetime.utcnow()
+        data_dict["created_at"] = datetime.now(timezone.utc)
         resumes_collection.insert_one(data_dict)
         return {"message": "Resume created successfully"}
 

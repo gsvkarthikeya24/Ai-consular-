@@ -28,11 +28,16 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response?.status === 401 && !error.config.url.includes('/login')) {
-            // Unauthorized - clear token and redirect to login
+        // If 401 Unauthorized, log out the user and redirect to login
+        if (error.response?.status === 401 && !error.config.url.includes('/api/auth/login')) {
+            // Unauthorized - clear token and redirect via a clean logout
             localStorage.removeItem('access_token');
             localStorage.removeItem('user');
-            window.location.href = '/login';
+
+            // Avoid redirecting if we are already on the login page
+            if (window.location.pathname !== '/login') {
+                window.location.href = '/login';
+            }
         }
         return Promise.reject(error);
     }

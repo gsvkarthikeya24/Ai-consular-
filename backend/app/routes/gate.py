@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List, Dict, Optional
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import datetime, timezone
 from ..database import get_collection
 from ..utils.auth_utils import get_current_user
 from ..data.gate_prep_data import (
@@ -133,7 +133,7 @@ async def submit_answer(
                 "is_correct": is_correct,
                 "marks_awarded": marks,
                 "time_taken": submission.time_taken,
-                "timestamp": datetime.utcnow()
+                "timestamp": datetime.now(timezone.utc)
             }
             progress_collection.insert_one(progress_entry)
         except Exception as e:

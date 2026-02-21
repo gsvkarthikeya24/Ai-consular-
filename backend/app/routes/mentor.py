@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from typing import List
+from datetime import datetime, timezone
 from ..utils.auth_utils import get_current_user
 from ..services.ai_service import ai_service
 from ..models.mentor import MentorChatRequest, MentorChatResponse, MotivationResponse, ProductivityTip
@@ -22,7 +23,7 @@ async def chat_with_mentor(
     
     return {
         "response": response,
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
 
@@ -34,7 +35,7 @@ async def get_motivation(current_user: dict = Depends(get_current_user)):
     
     return {
         "message": message,
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
 
