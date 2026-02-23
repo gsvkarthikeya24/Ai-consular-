@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import {
-    isAuthenticated,
     getToken,
     getUser,
     setToken,
@@ -8,6 +7,9 @@ import {
     removeToken,
     removeUser,
 } from '../utils/auth';
+
+const DEFAULT_EMAIL = 'student1@example.com';
+const DEFAULT_PASSWORD = 'password123';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -69,10 +71,38 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
-    // Run once on app mount
+    /** Auto-login with default account if no session exists */
+    const autoLogin = useCallback(async () => {
+        try {
+            const response = await fetch(`${API_URL}/api/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: DEFAULT_EMAIL, password: DEFAULT_PASSWORD }),
+            });
+            if (response.ok) {
+                const { access_token, user } = await response.json();
+                setToken(access_token);
+                setUser(user);
+                setCurrentUser(user);
+                setAuthState('authenticated');
+            } else {
+                setAuthState('unauthenticated');
+            }
+        } catch (err) {
+            console.warn('Auto-login failed:', err.message);
+            setAuthState('unauthenticated');
+        }
+    }, []);
+
+    // Run once on app mount: verify existing session, auto-login if none
     useEffect(() => {
-        verifySession();
-    }, [verifySession]);
+        const token = getToken();
+        if (token) {
+            verifySession();
+        } else {
+            autoLogin();
+        }
+    }, [verifySession, autoLogin]);
 
     /** Call this after a successful login API response */
     const login = (token, user) => {

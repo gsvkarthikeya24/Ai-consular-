@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link, Navigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { LogIn, Loader2, GraduationCap } from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../context/AuthContext';
@@ -134,14 +134,7 @@ const Login = () => {
                         </button>
                     </form>
 
-                    <div className="mt-8 text-center">
-                        <p className="text-sm text-text-muted">
-                            Don't have an account?{' '}
-                            <Link to="/register" className="text-primary-glow hover:text-white font-medium transition-colors">
-                                Create account
-                            </Link>
-                        </p>
-                    </div>
+
                 </Card>
             </div>
         </div>
