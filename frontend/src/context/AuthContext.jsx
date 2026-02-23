@@ -22,12 +22,12 @@ export const AuthProvider = ({ children }) => {
     // Initialize state strictly from localStorage for instant auth state on navigation/back
     const initialUser = getUser();
     const initialToken = getToken();
-    const isInitiallyAuthed = isAuthenticated();
 
-    // If ANY token is present in localStorage → start authenticated immediately.
-    // The background verifySession call will only log out on an explicit 401.
-    // This prevents the 'loading' flash that sends the back-button press to /login.
-    const [authState, setAuthState] = useState(initialToken ? 'authenticated' : 'unauthenticated');
+    // Inconsistent state (token but no user or vice versa) -> unauthenticated to be safe
+    const hasConsistentLocalAuth = !!(initialToken && initialUser);
+
+    // If both token and user are present, start authenticated immediately to prevent flickers
+    const [authState, setAuthState] = useState(hasConsistentLocalAuth ? 'authenticated' : 'unauthenticated');
     const [currentUser, setCurrentUser] = useState(initialUser);
 
     const verifySession = useCallback(async () => {

@@ -58,7 +58,9 @@ function AppRoutes() {
             <Route
                 path="/"
                 element={
-                    authState === 'loading' ? null : <Navigate to={isLoggedIn ? "/dashboard" : "/login"} replace />
+                    authState === 'loading' ? null : (
+                        <Navigate to={isLoggedIn ? "/dashboard" : "/login"} replace />
+                    )
                 }
             />
 

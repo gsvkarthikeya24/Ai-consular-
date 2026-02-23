@@ -4,7 +4,7 @@ services:
     name: ai-consular-backend
     runtime: python
     buildCommand: pip install -r backend/requirements.txt
-    startCommand: cd backend && gunicorn -w 2 -k uvicorn.workers.UvicornWorker app.main:app
+    startCommand: cd backend && gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app --bind 0.0.0.0:$PORT
     envVars:
       - key: MONGODB_URI
         sync: false
@@ -18,19 +18,23 @@ services:
         value: production
       - key: FRONTEND_URL
         fromService:
-          type: web
+          type: static
           name: ai-consular-frontend
           property: url
 
-  # Frontend — Static Site (handles SPA routing natively via _redirects)
-  - type: web
+  # Frontend — Static Site (Cheaper, faster, and auto-CDNs)
+  - type: static
     name: ai-consular-frontend
-    runtime: node
     buildCommand: cd frontend && npm install && npm run build
-    startCommand: cd frontend && npx serve -s dist --listen $PORT
+    publishDir: frontend/dist
     envVars:
       - key: VITE_API_URL
         fromService:
           type: web
           name: ai-consular-backend
           property: url
+    routes:
+      # Handle React Router client-side routing
+      - type: rewrite
+        source: /*
+        destination: /index.html

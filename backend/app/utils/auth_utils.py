@@ -56,18 +56,20 @@ def decode_token(token: str) -> dict:
             token, 
             settings.jwt_secret, 
             algorithms=[settings.jwt_algorithm],
-            options={"leeway": 10}
+            options={"leeway": 60} # Increased leeway for better reliability
         )
         return payload
     except ExpiredSignatureError:
+        print("[WARN] JWT token expired")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token has expired. Please log in again."
         )
-    except JWTError:
+    except JWTError as e:
+        print(f"[ERROR] JWT validation failed: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate credentials. Invalid token."
+            detail=f"Could not validate credentials: {str(e)}"
         )
 
 

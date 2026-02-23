@@ -205,12 +205,22 @@ VITE_API_URL=http://localhost:8000
 
 ## 🚢 Deployment (Render)
 
-This project is configured for easy deployment on **Render** using a Blueprint (`render.yaml`).
+This project is configured for automated deployment on **Render** using a Blueprint (`render.yaml`).
 
-1. **Connect Repository**: Connect your GitHub/GitLab repository to Render.
-2. **Use Blueprint**: Select **New +** -> **Blueprint** in the Render dashboard.
-3. **Values**: Provide the required environment variables (`MONGODB_URI`, `GEMINI_API_KEY`) when prompted.
-4. **Deploy**: Render will automatically set up the backend and frontend.
+### Deployment Steps
+1. **Push to GitHub**: Push your latest changes to your repository.
+2. **Open Render**: Go to [dashboard.render.com](https://dashboard.render.com).
+3. **New Blueprint**: Click **New +** -> **Blueprint**.
+4. **Select Repository**: Connect and select your project repository.
+5. **Configure Environment**: Provide the following variables when prompted:
+   - `MONGODB_URI`: Your database connection string (e.g., MongoDB Atlas or Neon PostgreSQL).
+   - `GEMINI_API_KEY`: Your Google Gemini API key.
+6. **Deploy**: Click **Apply** and Render will automatically provision:
+   - **Backend**: A Python web service running FastAPI.
+   - **Frontend**: A highly optimized **Static Site** with built-in CDN support.
+
+> [!NOTE]
+> The Blueprint automatically handles the linking between frontend and backend, so you don't need to manually configure the `FRONTEND_URL` or `VITE_API_URL`.
 
 ---
 

@@ -118,10 +118,11 @@ async def login(credentials: LoginRequest):
     try:
         password_valid = user and verify_password(credentials.password, user.get("password", ""))
     except Exception as e:
-        print(f"[WARN] Password verification error for {credentials.email}: {e}")
+        print(f"[ERROR] Password verification failed for {credentials.email}: {str(e)}")
         password_valid = False
 
     if not password_valid:
+        print(f"[WARN] Failed login attempt for {credentials.email}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password"
@@ -132,35 +133,41 @@ async def login(credentials: LoginRequest):
     
     # Update login stats
     current_time = datetime.now(timezone.utc)
-    users_collection.update_one(
-        {"_id": user["_id"]},
-        {
-            "$inc": {"login_count": 1},
-            "$set": {
-                "last_login": current_time,
-                "status": "active",
-                "updated_at": current_time
+    try:
+        users_collection.update_one(
+            {"_id": user["_id"]},
+            {
+                "$inc": {"login_count": 1},
+                "$set": {
+                    "last_login": current_time,
+                    "status": "active",
+                    "updated_at": current_time
+                }
             }
-        }
-    )
+        )
+    except Exception as e:
+        print(f"[WARN] Could not update login stats for {credentials.email}: {e}")
     
     # Reload user data to get updated stats for response
     user = users_collection.find_one({"_id": user["_id"]})
     
-    # Prepare response
+    # Prepare response with robust field mapping for legacy users
     user_response = UserResponse(
         id=str(user["_id"]),
-        name=user["name"],
-        email=user["email"],
-        branch=user["branch"],
-        year=user["year"],
-        interests=user["interests"],
-        career_goal=user["career_goal"],
-        role=user["role"],
+        name=user.get("name", "Unknown User"),
+        email=user.get("email", credentials.email),
+        branch=user.get("branch", "CSE"),
+        year=int(user.get("year", 1)),
+        interests=user.get("interests", []),
+        career_goal=user.get("career_goal", "Job"),
+        role=user.get("role", "student"),
         login_count=user.get("login_count", 0),
         last_login=user.get("last_login"),
         status=user.get("status", "active"),
-        created_at=user["created_at"]
+        created_at=user.get("created_at", current_time),
+        enrolled_courses=user.get("enrolled_courses", []),
+        completed_tasks=user.get("completed_tasks", 0),
+        cgpa=float(user.get("cgpa", 7.5))
     )
     
     return TokenResponse(access_token=access_token, user=user_response)
@@ -171,17 +178,20 @@ async def get_profile(current_user: dict = Depends(get_current_user)):
     """Get current user profile - used by frontend for session validation"""
     return UserResponse(
         id=str(current_user.get("_id", "")),
-        name=current_user.get("name", ""),
+        name=current_user.get("name", "Unknown User"),
         email=current_user.get("email", ""),
         branch=current_user.get("branch", "CSE"),
         year=int(current_user.get("year", 1)),
         interests=current_user.get("interests", []),
-        career_goal=current_user.get("career_goal", ""),
+        career_goal=current_user.get("career_goal", "Job"),
         role=current_user.get("role", "student"),
         login_count=current_user.get("login_count", 0),
         last_login=current_user.get("last_login"),
         status=current_user.get("status", "active"),
-        created_at=current_user.get("created_at", "")
+        created_at=current_user.get("created_at", datetime.now(timezone.utc)),
+        enrolled_courses=current_user.get("enrolled_courses", []),
+        completed_tasks=current_user.get("completed_tasks", 0),
+        cgpa=float(current_user.get("cgpa", 7.5))
     )
 
 
