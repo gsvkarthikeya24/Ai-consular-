@@ -1,4 +1,3 @@
-import { Heart } from 'lucide-react';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
@@ -9,9 +8,6 @@ const Footer = () => {
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
                     <p className="text-sm text-text-muted text-center sm:text-left">
                         © {currentYear} <span className="text-primary-glow font-semibold">AI Consular</span>. All rights reserved.
-                    </p>
-                    <p className="text-sm text-text-muted flex items-center gap-1">
-                        Made with <Heart className="w-4 h-4 text-red-400 fill-red-400 animate-pulse" /> for students
                     </p>
                 </div>
             </div>
