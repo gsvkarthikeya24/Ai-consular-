@@ -82,7 +82,7 @@ const BranchQuiz = () => {
 
     if (result) {
         return (
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-4xl mx-auto pb-24">
                 <div className="text-center mb-12 animate-fade-in">
                     <div className="inline-flex p-4 rounded-full bg-green-500/10 border border-green-500/20 mb-6">
                         <CheckCircle className="w-12 h-12 text-green-400" />
