@@ -22,7 +22,7 @@ import Layout from './components/shared/Layout';
 
 /** Inner app — has access to AuthContext */
 function AppRoutes() {
-    const { isLoggedIn } = useAuth();
+    const { isLoggedIn, authState } = useAuth();
 
     return (
         <Routes>

@@ -69,9 +69,9 @@ export const isAuthenticated = () => {
     // Check if token is expired
     const payload = parseJwt(token);
 
-    // If we can't parse the payload, consider it unauthenticated
+    // If we can't parse the payload, trust the token and let the server verify it
     if (!payload || !payload.exp) {
-        return false;
+        return true;
     }
 
     const currentTime = Math.floor(Date.now() / 1000);
