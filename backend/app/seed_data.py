@@ -15,6 +15,10 @@ from app.data.career_domains_data import CAREER_DOMAINS
 from app.data.gate_prep_data import GATE_QUESTIONS_CSE
 
 fake = Faker()
+# Set seed for reproducibility in demo mode
+faker_seed = 42
+random.seed(faker_seed)
+fake.seed_instance(faker_seed)
 
 BRANCHES = ['CSE', 'ECE', 'EEE', 'ME', 'Civil']
 CAREER_GOALS = ['Job', 'Govt', 'Higher Studies']
@@ -315,6 +319,10 @@ def seed_gate_questions():
 def main():
     """Run all seed functions"""
     print("[SEED] Starting database seeding...")
+    
+    # Set seed for reproducibility
+    random.seed(42)
+    fake.seed_instance(42)
     
     connect_db()
     

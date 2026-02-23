@@ -12,6 +12,8 @@ class UserBase(BaseModel):
     interests: List[str] = Field(default=[], examples=[["AI", "Web Development"]])
     career_goal: str = Field(..., examples=["Job"])  # "Job" | "Govt" | "Higher Studies"
     enrolled_courses: List[str] = Field(default=[], examples=[["course_id_1", "course_id_2"]])
+    completed_tasks: int = Field(default=0, examples=[5])
+    cgpa: float = Field(default=7.5, ge=0.0, le=10.0, examples=[8.5])
 
 
 class UserCreate(UserBase):
@@ -26,6 +28,8 @@ class UserUpdate(BaseModel):
     year: Optional[int] = Field(None, ge=1, le=4, examples=[3])
     interests: Optional[List[str]] = Field(None, examples=[["AI", "Web Development"]])
     career_goal: Optional[str] = Field(None, examples=["Higher Studies"])
+    enrolled_courses: Optional[List[str]] = Field(None, examples=[["course_id_1"]])
+    cgpa: Optional[float] = Field(None, ge=0.0, le=10.0, examples=[9.0])
 
 
 class UserInDB(UserBase):

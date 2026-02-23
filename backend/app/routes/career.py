@@ -95,9 +95,19 @@ async def get_career_recommendations(current_user: dict = Depends(get_current_us
     """
     
     # Get student's activity data for skills analysis
-    # This would typically query the activities collection
+    activities_collection = get_collection("activities")
+    recent_activities = list(activities_collection.find(
+        {"student_id": str(current_user["_id"]), "activity_type": "task_completed"}
+    ).sort("timestamp", -1).limit(20))
+    
+    all_skills = set()
+    for activity in recent_activities:
+        skills = activity.get("skills_gained", [])
+        if isinstance(skills, list):
+            all_skills.update(skills)
+    
     skills_analysis = {
-        "skills": []  # Extracted from completed tasks
+        "skills": list(all_skills)
     }
     
     result = await ai_service.career_recommendation(
@@ -112,7 +122,8 @@ async def get_career_recommendations(current_user: dict = Depends(get_current_us
         "student_profile": {
             "branch": current_user["branch"],
             "interests": current_user.get("interests", []),
-            "career_goal": current_user.get("career_goal")
+            "career_goal": current_user.get("career_goal"),
+            "skills_from_tasks": skills_analysis["skills"]
         }
     }
 

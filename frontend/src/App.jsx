@@ -54,8 +54,13 @@ function AppRoutes() {
                 />
             </Route>
 
-            {/* Default Route */}
-            <Route path="/" element={<Navigate to={isLoggedIn ? "/dashboard" : "/login"} replace />} />
+            {/* Default Route — Only redirect once auth state is settled */}
+            <Route
+                path="/"
+                element={
+                    authState === 'loading' ? null : <Navigate to={isLoggedIn ? "/dashboard" : "/login"} replace />
+                }
+            />
 
             {/* 404 Route */}
             <Route path="*" element={<Navigate to="/" replace />} />

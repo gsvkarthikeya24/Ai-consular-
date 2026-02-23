@@ -19,26 +19,24 @@ const AuthContext = createContext(null);
  * API calls per navigation and no flicker/re-login on back button presses.
  */
 export const AuthProvider = ({ children }) => {
-    // Synchronously check local storage to prevent redirect flicker
+    // Initialize state strictly from localStorage for instant auth state on navigation/back
     const initialUser = getUser();
+    const initialToken = getToken();
     const isInitiallyAuthed = isAuthenticated();
 
-    const [authState, setAuthState] = useState(isInitiallyAuthed ? 'authenticated' : 'loading');
-    const [currentUser, setCurrentUser] = useState(isInitiallyAuthed ? initialUser : null);
+    const [authState, setAuthState] = useState(isInitiallyAuthed ? 'authenticated' : (initialToken ? 'loading' : 'unauthenticated'));
+    const [currentUser, setCurrentUser] = useState(initialUser);
 
     const verifySession = useCallback(async () => {
         const token = getToken();
 
-        // If no token at all, definitely unauthenticated
         if (!token) {
             setAuthState('unauthenticated');
             setCurrentUser(null);
             return;
         }
 
-        // Verify with backend once on app start
         try {
-            const token = getToken();
             const response = await fetch(`${API_URL}/api/auth/profile`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -46,21 +44,24 @@ export const AuthProvider = ({ children }) => {
             if (response.ok) {
                 const userData = await response.json();
                 setCurrentUser(userData);
-                // Keep localStorage in sync with latest server data
                 setUser(userData);
                 setAuthState('authenticated');
-            } else {
-                // Token rejected — clear stale data
-                console.warn('Session invalid — clearing localStorage');
+            } else if (response.status === 401) {
+                // Only de-authenticate if the server explicitly rejects the token as unauthorized
+                console.warn('Session explicitly invalid — clearing localStorage');
                 removeToken();
                 removeUser();
                 setCurrentUser(null);
                 setAuthState('unauthenticated');
+            } else {
+                // For other server errors (500, etc.), keep the current "authenticated" status
+                // and just log a warning. This prevents logouts during server maintenance or crashes.
+                console.warn(`Auth check server error (${response.status}), keeping session:`, response.statusText);
+                setAuthState('authenticated');
             }
         } catch (err) {
-            // Network error — trust the local token rather than logging out
+            // Network error — trust the local token
             console.warn('Auth check network error, trusting local token:', err.message);
-            setCurrentUser(getUser());
             setAuthState('authenticated');
         }
     }, []);

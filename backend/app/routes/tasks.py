@@ -182,15 +182,27 @@ async def complete_task(
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
     
-    # Update task status
+    # Extract skills gained using AI
+    task_info = f"Title: {task['title']}\nDescription: {task['description']}\nType: {task['type']}"
+    skills_gained = await ai_service.extract_skills(task_info)
+    
+    # Update task status and skills gained
     tasks_collection.update_one(
         {"_id": ObjectId(task_id)},
         {
             "$set": {
                 "status": "completed",
+                "skills_gained": skills_gained,
                 "completed_at": datetime.now(timezone.utc)
             }
         }
+    )
+    
+    # Update user stats
+    users_collection = get_collection("users")
+    users_collection.update_one(
+        {"_id": ObjectId(current_user["_id"])},
+        {"$inc": {"completed_tasks": 1}}
     )
     
     # Log activity
@@ -203,13 +215,16 @@ async def complete_task(
             "subject": task["subject"],
             "title": task["title"]
         },
-        "skills_gained": [],  # Can be enhanced with NLP
+        "skills_gained": skills_gained,
         "weak_areas": [],
         "strong_areas": [],
         "timestamp": datetime.now(timezone.utc)
     })
     
-    return {"message": "Task marked as completed"}
+    return {
+        "message": "Task marked as completed",
+        "skills_gained": skills_gained
+    }
 
 
 @router.delete("/{task_id}")

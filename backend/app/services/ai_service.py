@@ -240,6 +240,29 @@ Provide 3-5 bullet points for each project."""
             "timestamp": datetime.now(timezone.utc).isoformat()
         }
     
+    async def extract_skills(self, task_info: str) -> List[str]:
+        """Intelligently extract skills from task description and history"""
+        system_prompt = """You are an educational skill analyzer.
+Analyze the following task information and extract 2-4 professional/technical skills a student would gain by completing it.
+Return ONLY a JSON list of strings (skill names).
+Example: ["React.js", "State Management", "Component Design"]"""
+        
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": task_info}
+        ]
+        
+        response = await self.chat_completion(messages, temperature=0.3, max_tokens=100)
+        parsed_result = self._extract_json(response)
+        
+        if isinstance(parsed_result, list):
+            return parsed_result
+        elif isinstance(parsed_result, dict) and "skills" in parsed_result:
+            return parsed_result["skills"]
+            
+        # Fallback if AI fails
+        return []
+    
     async def ats_analysis(
         self,
         resume_text: str,

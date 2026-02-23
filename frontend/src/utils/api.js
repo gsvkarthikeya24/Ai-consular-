@@ -38,12 +38,13 @@ api.interceptors.response.use(
         const isProfileEndpoint = url.includes('/api/auth/profile');
 
         if (status === 401 && !isLoginEndpoint && !isProfileEndpoint) {
-            // Unauthorized - clear token and redirect via a clean logout
+            // Unauthorized - clear token
             localStorage.removeItem('access_token');
             localStorage.removeItem('user');
 
-            // Avoid redirecting if we are already on the login page
-            if (window.location.pathname !== '/login') {
+            // Force a reload to clear all React states and redirect to login
+            // but only if we're not already heading there to avoid loops
+            if (!window.location.pathname.startsWith('/login') && !window.location.pathname.startsWith('/register')) {
                 window.location.href = '/login';
             }
         }
