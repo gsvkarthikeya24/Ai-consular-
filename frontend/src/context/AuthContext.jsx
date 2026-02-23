@@ -24,7 +24,10 @@ export const AuthProvider = ({ children }) => {
     const initialToken = getToken();
     const isInitiallyAuthed = isAuthenticated();
 
-    const [authState, setAuthState] = useState(isInitiallyAuthed ? 'authenticated' : (initialToken ? 'loading' : 'unauthenticated'));
+    // If ANY token is present in localStorage → start authenticated immediately.
+    // The background verifySession call will only log out on an explicit 401.
+    // This prevents the 'loading' flash that sends the back-button press to /login.
+    const [authState, setAuthState] = useState(initialToken ? 'authenticated' : 'unauthenticated');
     const [currentUser, setCurrentUser] = useState(initialUser);
 
     const verifySession = useCallback(async () => {

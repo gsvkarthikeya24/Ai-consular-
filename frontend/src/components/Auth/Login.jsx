@@ -13,9 +13,31 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    // If already logged in, skip the login page entirely
+    // Already authenticated → skip login page entirely
     if (authState === 'authenticated') {
         return <Navigate to="/dashboard" replace />;
+    }
+
+    // Auth still initializing → show spinner so the form never flashes
+    if (authState === 'loading') {
+        return (
+            <div style={{
+                display: 'flex', justifyContent: 'center', alignItems: 'center',
+                height: '100vh', background: 'linear-gradient(135deg, #0f0c29, #302b63, #24243e)',
+                color: '#fff', fontFamily: 'Inter, sans-serif'
+            }}>
+                <div style={{ textAlign: 'center' }}>
+                    <div style={{
+                        width: '40px', height: '40px',
+                        border: '3px solid rgba(255,255,255,0.15)',
+                        borderTop: '3px solid #8b5cf6', borderRadius: '50%',
+                        animation: 'spin 0.7s linear infinite', margin: '0 auto 16px'
+                    }} />
+                    <span style={{ opacity: 0.7, fontSize: '0.95rem' }}>Loading…</span>
+                </div>
+                <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+            </div>
+        );
     }
 
     const handleSubmit = async (e) => {
